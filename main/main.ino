@@ -1,6 +1,6 @@
 /Proyecto 3 Digital 2
-//Noel Prado 19025
 //Daniel Mundo 19508
+//Noel Prado 19025
 // 8/04/2021
 
 
