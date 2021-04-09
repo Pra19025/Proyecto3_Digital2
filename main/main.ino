@@ -55,24 +55,15 @@ void setup() {
   GPIOPadConfigSet(GPIO_PORTB_BASE, 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
   Serial.println("Inicio");
   LCD_Init();
-  LCD_Clear(0x00);
+  LCD_Clear(0x3CDB17);  //es el verde
 
   FillRect(0, 0, 319, 206, 0x421b);
-  String text1 = "Super Mario World!";
+  String text1 = "Pelea violenta";
   LCD_Print(text1, 20, 100, 2, 0xffff, 0x421b);
+  
   //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
-
   //LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
 
-
-  for (int x = 0; x < 319; x++) {
-    LCD_Bitmap(x, 52, 16, 16, tile2);
-    LCD_Bitmap(x, 68, 16, 16, tile);
-
-    LCD_Bitmap(x, 207, 16, 16, tile);
-    LCD_Bitmap(x, 223, 16, 16, tile);
-    x += 15;
-  }
 
 }
 //***************************************************************************************************************************************
