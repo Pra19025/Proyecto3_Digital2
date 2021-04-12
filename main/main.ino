@@ -61,9 +61,6 @@ void setup() {
   String text1 = "Pelea violenta";
   LCD_Print(text1, 20, 100, 2, 0xffff, 0x421b);
   
-  //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
-  //LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
-
 
 }
 //***************************************************************************************************************************************
@@ -74,47 +71,16 @@ void loop() {
     delay(15);
     int anim2 = (x / 35) % 2;
 
-    LCD_Sprite(x, 100, 16, 24, planta, 2, anim2, 0, 1);
+    LCD_Sprite(x, 100, 52, 52, pikachuS, 2, anim2, 0, 1);
     V_line( x - 1, 100, 24, 0x421b);
 
-    //LCD_Bitmap(x, 100, 32, 32, prueba);
-
-    int anim = (x / 11) % 8;
-
-
-    int anim3 = (x / 11) % 4;
-
-    LCD_Sprite(x, 20, 16, 32, mario, 8, anim, 1, 0);
-    V_line( x - 1, 20, 32, 0x421b);
-
-    //LCD_Sprite(x,100,32,32,bowser,4,anim3,0,1);
-    //V_line( x -1, 100, 32, 0x421b);
-
-
-    LCD_Sprite(x, 140, 16, 16, enemy, 2, anim2, 1, 0);
-    V_line( x - 1, 140, 16, 0x421b);
-
-    LCD_Sprite(x, 175, 16, 32, luigi, 8, anim, 1, 0);
-    V_line( x - 1, 175, 32, 0x421b);
   }
   for (int x = 320 - 32; x > 0; x--) {
     delay(5);
     int anim = (x / 11) % 8;
     int anim2 = (x / 11) % 2;
-
-    LCD_Sprite(x, 100, 16, 24, planta, 2, anim2, 0, 0);
     V_line( x + 16, 100, 24, 0x421b);
 
-    //LCD_Bitmap(x, 100, 32, 32, prueba);
-
-    //LCD_Sprite(x, 140, 16, 16, enemy,2, anim2,0, 0);
-    //V_line( x + 16, 140, 16, 0x421b);
-
-    //LCD_Sprite(x, 175, 16, 32, luigi,8, anim,0, 0);
-    //V_line( x + 16, 175, 32, 0x421b);
-
-    //LCD_Sprite(x, 20, 16, 32, mario,8, anim,0, 0);
-    //V_line( x + 16, 20, 32, 0x421b);
   }
 
 }
