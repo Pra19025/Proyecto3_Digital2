@@ -51,7 +51,10 @@ void setup() {
   LCD_Init();
   LCD_Clear(0x3CDB17);  //es el verde
 
-  FillRect(0, 0, 319, 206, 0x421b);
+  FillRect(0, 0, 319, 206, 0x761E);
+   for (int i = 0; i < 320 - 30; i++) {
+  LCD_Bitmap(i,  207, 32, 32, piedras);
+   }
   String text1 = "Pelea violenta";
   LCD_Print(text1, 20, 100, 2, 0xffff, 0x421b);
 
@@ -62,14 +65,17 @@ void setup() {
 //***************************************************************************************************************************************
 void loop() {
   //30 porque es el ancho del tiburon
-  for (int x = 0; x < 320 - 30; x++) {
-
-    int anim2 = (x / 35) % 2;
-    LCD_Sprite(x, 170, 30, 33, tiburonS, 3, anim2, 0, 0 );
-    V_line( x - 1, 170, 33, 0x421b);
-    delay(15);
-    
+  for (int i = 0; i < 320 - 30; i++) {
+    int anim2 = (i / 35) % 2;
+    LCD_Sprite(i, 170, 30, 33, tiburonS, 3, anim2, 0, 0 );
+    V_line( i - 1, 170, 33, 0x421b);
+    delay(15);    
   }
-
+ for (int i = 0; i < 320 - 32; i++) {
+    int anim = (i / 35) % 2;
+    LCD_Sprite(i, 138, 32, 32, megamanRojoS, 4, anim, 0, 0 );
+    V_line( i - 1, 138, 33, 0x421b);
+    delay(15);    
+  }
 
 }
