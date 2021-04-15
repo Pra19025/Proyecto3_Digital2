@@ -52,6 +52,19 @@ int outputValue1 = 0;        // value output to the PWM (analog out)
 int sensorValue2 = 0;        // value read from the pot
 int outputValue2 = 0;        // value output to the PWM (analog out)
 
+//control del joystick
+int potx1 = 122;
+int poty1 = 122;
+int potx2 = 122;
+int poty2 = 122;
+int delay1 = 0;
+
+int x = 0;
+int y = 0;
+int xanterior = x;
+int yanterior = y;
+
+int anim2;
 //***************************************************************************************************************************************
 // Inicialización
 //***************************************************************************************************************************************
@@ -84,40 +97,77 @@ void setup() {
 //***************************************************************************************************************************************
 void loop() {
   //30 porque es el ancho del tiburon
-  for (int x = 0; x < 320 - 30; x++) {
 
-    int anim2 = (x / 35) % 2;
-    LCD_Sprite(x, 170, 30, 33, tiburonS, 3, anim2, 0, 0 );
-    V_line( x - 1, 170, 33, 0x421b);
-    delay(15);
+  delay(15);
 
 
-    //***************************************************************************************************************************************
+  //***************************************************************************************************************************************
 
 
-    // read the analog in value:
-    sensorValue1 = analogRead(analogInPin1);
-    // map it to the range of the analog out:
-    outputValue1 = map(sensorValue1, 0, 4095, 0, 255);
+  // read the analog in value:
+  sensorValue1 = analogRead(analogInPin1);
+  // map it to the range of the analog out:
+  potx1 = map(sensorValue1, 0, 4095, 0, 255);
 
-    // read the analog in value:
-    sensorValue2 = analogRead(analogInPin2);
-    // map it to the range of the analog out:
-    outputValue2 = map(sensorValue2, 0, 4095, 0, 255);
+  // read the analog in value:
+  sensorValue2 = analogRead(analogInPin2);
+  // map it to the range of the analog out:
+  poty1 = map(sensorValue2, 0, 4095, 0, 255);
 
 
-    // print the results to the serial monitor:
-//    Serial.print("sensor X = " );
-//    Serial.print(sensorValue1);
-    Serial.print("output X = ");
-    Serial.print(outputValue1);
-    
-//    Serial.print(" sensor Y = " );
-//    Serial.print(sensorValue2);
-    Serial.print("\t output Y = ");
-    Serial.println(outputValue2);
+  // print the results to the serial monitor:
+  //    Serial.print("sensor X = " );
+  //    Serial.print(sensorValue1);
+  Serial.print("output X = ");
+  Serial.print(potx1);
 
-    delay(20);
+  //    Serial.print(" sensor Y = " );
+  //    Serial.print(sensorValue2);
+  Serial.print("\t output Y = ");
+  Serial.println(poty1);
+  delay(10);
+
+
+  //codigo para controlar la posición según joystick
+  //la dimensión de la pantalla es: 320*240 pixeles
+
+  xanterior = x;
+  yanterior = y;
+
+  if (potx1 <= 100) {
+    x--;
+    if (x < 0) {
+      x = 0;
+    }
+    //delay1 = (9 / 10000) * potx1 + 0.01;
+
   }
+  if (potx1>=155) {
+    x++;
+  }
+  if (x > 320) {
+    x = 320;
+  }
+  /*delay1 = (-9 / 10000) * (potx1 - 155) + 0.1;
 
+  if (poty1 <= 100) {
+    y = y + 1;
+  }
+  if (y == 751) {
+    y = 0;
+  }
+  delay1 = (9 / 12400) * poty1 + 0.01;
+
+  if (155 <= poty1) {
+    y = y - 1;
+  }
+  if (y == -1) {
+    y = 750;
+  }
+  delay1 = (-9 / 10000) * (poty1 - 155) + 0.1;*/
+  
+  anim2 = (x) % 3;
+
+  LCD_Sprite(x,y, 30, 33, tiburonS, 3, anim2, 0, 0 );
+  delay(15);
 }
