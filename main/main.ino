@@ -41,28 +41,37 @@ void LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int
 void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[], int columns, int index, char flip, char offset);
 
 //***************************************************************************************************************************************
+// Variables
+//***************************************************************************************************************************************
+
+//lectura del potenciómetro
+const int analogInPin1 = PE_5;  // Analog input pin that the potentiometer is attached to
+const int analogInPin2 = PE_2;  // Analog input pin that the potentiometer is attached to
+int sensorValue1 = 0;        // value read from the pot
+int outputValue1 = 0;        // value output to the PWM (analog out)
+int sensorValue2 = 0;        // value read from the pot
+int outputValue2 = 0;        // value output to the PWM (analog out)
+
+//***************************************************************************************************************************************
 // Inicialización
 //***************************************************************************************************************************************
 void setup() {
+
+  Serial.begin(9600);
+
+  //***************************************************************************************************************************************
+
   SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
   Serial.begin(9600);
   GPIOPadConfigSet(GPIO_PORTB_BASE, 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
   Serial.println("Inicio");
   LCD_Init();
   LCD_Clear(0x3CDB17);  //es el verde
-  //0xDCA2 naranja
-  //0x761E celeste
-  FillRect(0, 0, 319, 206,  0x9E19);
-   for (int i = 0; i < 320 - 30; i++) {
-  LCD_Bitmap(i,  207, 32, 32, piedras);
-   }
-  LCD_Bitmap(100,  0, 31, 24, cloud);
-  LCD_Bitmap(250,  0, 31, 24, cloud);
+
+  FillRect(0, 0, 319, 206, 0x421b);
   String text1 = "Pelea violenta";
-  LCD_Print(text1, 50, 100, 2, 0xffff,  0x9E19);
-  String text2 = "J1";
-  LCD_Print(text2, 0, 50, 2, 0xffff,  0x9E19);
-   V_line( 25, 138, 33, 0x421b);
+  LCD_Print(text1, 20, 100, 2, 0xffff, 0x421b);
+
 
 }
 //***************************************************************************************************************************************
@@ -70,17 +79,40 @@ void setup() {
 //***************************************************************************************************************************************
 void loop() {
   //30 porque es el ancho del tiburon
-  for (int i = 0; i < 320 - 30; i++) {
-    int anim2 = (i / 35) % 2;
-    LCD_Sprite(i, 170, 30, 33, tiburonS, 3, anim2, 0, 0 );
-    V_line( i - 1, 170, 33, 0x421b);
-    delay(15);    
-  }
- for (int i = 0; i < 320 - 32; i++) {
-    int anim = (i / 35) % 2;
-    LCD_Sprite(i, 138, 32, 32, megamanRojoS, 4, anim, 0, 0 );
-    V_line( i - 1, 138, 33, 0x421b);
-    delay(15);    
+  for (int x = 0; x < 320 - 30; x++) {
+
+    int anim2 = (x / 35) % 2;
+    LCD_Sprite(x, 170, 30, 33, tiburonS, 3, anim2, 0, 0 );
+    V_line( x - 1, 170, 33, 0x421b);
+    delay(15);
+
+
+    //***************************************************************************************************************************************
+
+
+    // read the analog in value:
+    sensorValue1 = analogRead(analogInPin1);
+    // map it to the range of the analog out:
+    outputValue1 = map(sensorValue1, 0, 4095, 0, 255);
+
+    // read the analog in value:
+    sensorValue2 = analogRead(analogInPin2);
+    // map it to the range of the analog out:
+    outputValue2 = map(sensorValue2, 0, 4095, 0, 255);
+
+
+    // print the results to the serial monitor:
+//    Serial.print("sensor X = " );
+//    Serial.print(sensorValue1);
+    Serial.print("output X = ");
+    Serial.print(outputValue1);
+    
+//    Serial.print(" sensor Y = " );
+//    Serial.print(sensorValue2);
+    Serial.print("\t output Y = ");
+    Serial.println(outputValue2);
+
+    delay(20);
   }
 
 }
