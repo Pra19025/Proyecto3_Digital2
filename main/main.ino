@@ -67,8 +67,13 @@ void setup() {
   Serial.println("Inicio");
   LCD_Init();
   LCD_Clear(0x3CDB17);  //es el verde
-
-  FillRect(0, 0, 319, 206, 0x421b);
+  for (int i = 0; i < 320 - 30; i++) {
+  LCD_Bitmap(i,  207, 32, 32, piedras);
+   }
+    FillRect(0, 0, 319, 206, 0x421b);
+  LCD_Bitmap(100,  0, 31, 24, cloud);
+  LCD_Bitmap(250,  0, 31, 24, cloud);
+ 
   String text1 = "Pelea violenta";
   LCD_Print(text1, 20, 100, 2, 0xffff, 0x421b);
 
