@@ -23,22 +23,6 @@
 #include "pantalla.h"
 
 
-//***************************************************************************************************************************************
-// Functions Prototypes
-//***************************************************************************************************************************************
-void LCD_Init(void);
-void LCD_CMD(uint8_t cmd);
-void LCD_DATA(uint8_t data);
-void SetWindows(unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2);
-void LCD_Clear(unsigned int c);
-void H_line(unsigned int x, unsigned int y, unsigned int l, unsigned int c);
-void V_line(unsigned int x, unsigned int y, unsigned int l, unsigned int c);
-void Rect(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int c);
-void FillRect(unsigned int x, unsigned int y, unsigned int w, unsigned int h, unsigned int c);
-void LCD_Print(String text, int x, int y, int fontSize, int color, int background);
-
-void LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
-void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[], int columns, int index, char flip, char offset);
 
 //***************************************************************************************************************************************
 // Variables
@@ -57,12 +41,11 @@ int potx1 = 122;
 int poty1 = 122;
 int potx2 = 122;
 int poty2 = 122;
-int delay1 = 0;
+
 
 int x = 0;
 int y = 0;
-int xanterior = x;
-int yanterior = y;
+
 
 int anim2;
 //***************************************************************************************************************************************
@@ -96,12 +79,6 @@ void setup() {
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
-  //30 porque es el ancho del tiburon
-
-  delay(15);
-
-
-  //***************************************************************************************************************************************
 
 
   // read the analog in value:
@@ -115,14 +92,10 @@ void loop() {
   poty1 = map(sensorValue2, 0, 4095, 0, 255);
 
 
-  // print the results to the serial monitor:
-  //    Serial.print("sensor X = " );
-  //    Serial.print(sensorValue1);
+
   Serial.print("output X = ");
   Serial.print(potx1);
 
-  //    Serial.print(" sensor Y = " );
-  //    Serial.print(sensorValue2);
   Serial.print("\t output Y = ");
   Serial.println(poty1);
   delay(10);
@@ -131,16 +104,12 @@ void loop() {
   //codigo para controlar la posición según joystick
   //la dimensión de la pantalla es: 320*240 pixeles
 
-  xanterior = x;
-  yanterior = y;
-
   if (potx1 <= 100) {
     x--;
     if (x < 0) {
       x = 0;
     }
-    //delay1 = (9 / 10000) * potx1 + 0.01;
-
+    
   }
   if (potx1>=155) {
     x++;
@@ -148,23 +117,20 @@ void loop() {
   if (x > 320) {
     x = 320;
   }
-  /*delay1 = (-9 / 10000) * (potx1 - 155) + 0.1;
-
+  
   if (poty1 <= 100) {
-    y = y + 1;
+    y++;
   }
-  if (y == 751) {
+  if (y>240) {
+    y = 240;
+  }
+  
+  if (155 <= poty1) {
+    y--;
+  }
+  if (y<0) {
     y = 0;
   }
-  delay1 = (9 / 12400) * poty1 + 0.01;
-
-  if (155 <= poty1) {
-    y = y - 1;
-  }
-  if (y == -1) {
-    y = 750;
-  }
-  delay1 = (-9 / 10000) * (poty1 - 155) + 0.1;*/
   
   anim2 = (x) % 3;
 
