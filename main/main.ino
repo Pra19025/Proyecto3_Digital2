@@ -23,7 +23,7 @@
 #include "pantalla.h"
 
 
-
+//color de fondo  0x2AAD
 //***************************************************************************************************************************************
 // Variables
 //***************************************************************************************************************************************
@@ -62,16 +62,20 @@ void setup() {
   GPIOPadConfigSet(GPIO_PORTB_BASE, 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
   Serial.println("Inicio");
   LCD_Init();
-  LCD_Clear(0x3CDB17);  //es el verde
-  for (int i = 0; i < 320 - 30; i++) {
-  LCD_Bitmap(i,  207, 32, 32, piedras);
-   }
-    FillRect(0, 0, 319, 206, 0x421b);
-  LCD_Bitmap(100,  0, 31, 24, cloud);
-  LCD_Bitmap(250,  0, 31, 24, cloud);
- 
+  LCD_Clear(0x0);  //es el azul
+  LCD_Clear(0x0528);
+  for (int i = 0; i < 320 - 30; i = i + 32) {
+    LCD_Bitmap(i,  207, 32, 32, piedras);
+  }
+
+  FillRect(0, 0, 319, 206, 0x421b);
+
+  for (int i = 0; i < 320 - 30; i = i + 32) {
+    LCD_Bitmap(i,  0, 31, 24, cloud);
+  }
+
   String text1 = "Pelea violenta";
-  LCD_Print(text1, 20, 100, 2, 0xffff, 0x421b);
+  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
 
 
 }
@@ -109,31 +113,32 @@ void loop() {
     if (x < 0) {
       x = 0;
     }
-    
+
   }
-  if (potx1>=155) {
+  if (potx1 >= 155) {
     x++;
   }
   if (x > 320) {
     x = 320;
   }
-  
+
   if (poty1 <= 100) {
     y++;
   }
-  if (y>240) {
+  if (y > 240) {
     y = 240;
   }
-  
+
   if (155 <= poty1) {
     y--;
   }
-  if (y<0) {
+  if (y < 0) {
     y = 0;
   }
-  
+
   anim2 = (x) % 3;
 
-  LCD_Sprite(x,y, 30, 33, tiburonS, 3, anim2, 0, 0 );
+  // LCD_Sprite(x,y, 30, 33, tiburonS, 3, anim2, 0, 0 );
+  LCD_Sprite(x, y, 32, 33, ataqueTib, 3, anim2, 0, 0 );
   delay(15);
 }
