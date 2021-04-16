@@ -139,6 +139,6 @@ void loop() {
   anim2 = (x) % 3;
 
   // LCD_Sprite(x,y, 30, 33, tiburonS, 3, anim2, 0, 0 );
-  LCD_Sprite(x, y, 32, 33, ataqueTib, 3, anim2, 0, 0 );
+  LCD_Sprite(x, y, 32, 33, ataqueMega, 3, anim2, 0, 0 );
   delay(15);
 }
