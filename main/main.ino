@@ -47,8 +47,6 @@ int j1_pos_new;
 int j2_pos_prev;
 int j2_pos_new;*/
 
-int x = 0;
-int y = 0;
 int x_j1 = 0;
 int y_j1  = 0;
 int x_j2 = 0;
