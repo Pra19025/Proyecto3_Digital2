@@ -29,20 +29,20 @@
 //***************************************************************************************************************************************
 
 //lectura del potenciómetro
-const int analogInPin1 = PE_5;  // Analog input pin that the potentiometer is attached to
-const int analogInPin2 = PE_2;  // Analog input pin that the potentiometer is attached to
-int sensorValue1 = 0;        // value read from the pot
-int outputValue1 = 0;        // value output to the PWM (analog out)
-int sensorValue2 = 0;        // value read from the pot
-int outputValue2 = 0;        // value output to the PWM (analog out)
+//const int analogInPin1 = PE_5;  // Analog input pin that the potentiometer is attached to
+//const int analogInPin2 = PE_2;  // Analog input pin that the potentiometer is attached to
+//int sensorValue1 = 0;        // value read from the pot
+//int outputValue1 = 0;        // value output to the PWM (analog out)
+//int sensorValue2 = 0;        // value read from the pot
+//int outputValue2 = 0;        // value output to the PWM (analog out)
 
 //control del joystick
-int potx1 = 122;
-int poty1 = 122;
-int potx2 = 122;
-int poty2 = 122;
+//int potx1 = 122;
+//int poty1 = 122;
+//int potx2 = 122;
+//int poty2 = 122;
 
-
+int inByte = 0;
 int x = 0;
 int y = 0;
 
@@ -53,7 +53,9 @@ int anim2;
 //***************************************************************************************************************************************
 void setup() {
 
-  Serial.begin(9600);
+  Serial.begin(115200);
+
+
 
   //***************************************************************************************************************************************
 
@@ -85,60 +87,73 @@ void setup() {
 void loop() {
 
 
-  // read the analog in value:
-  sensorValue1 = analogRead(analogInPin1);
-  // map it to the range of the analog out:
-  potx1 = map(sensorValue1, 0, 4095, 0, 255);
+  //  // read the analog in value:
+  //  sensorValue1 = analogRead(analogInPin1);
+  //  // map it to the range of the analog out:
+  //  potx1 = map(sensorValue1, 0, 4095, 0, 255);
+  //
+  //  // read the analog in value:
+  //  sensorValue2 = analogRead(analogInPin2);
+  //  // map it to the range of the analog out:
+  //  poty1 = map(sensorValue2, 0, 4095, 0, 255);
 
-  // read the analog in value:
-  sensorValue2 = analogRead(analogInPin2);
-  // map it to the range of the analog out:
-  poty1 = map(sensorValue2, 0, 4095, 0, 255);
 
+  // ESTO ES LO DE PRUEBA DE LECTURA DEL ESP32
+  Serial.print("hola");
 
+  while (Serial.available() <= 0) {
+    Serial.println('A'); // send a capital A
+    delay(300);
+  }
+  
+  if (Serial.available() > 0) {
+    // get incoming byte:
+    inByte = Serial.read();
+    Serial.print(inByte);
+  }
 
-  Serial.print("output X = ");
-  Serial.print(potx1);
-
-  Serial.print("\t output Y = ");
-  Serial.println(poty1);
-  delay(10);
-
+  //  Serial.print("output X = ");
+  //  Serial.print(potx1);
+  //
+  //  Serial.print("\t output Y = ");
+  //  Serial.println(poty1);
+  //  delay(10);
+  //
 
   //codigo para controlar la posición según joystick
   //la dimensión de la pantalla es: 320*240 pixeles
 
-  if (potx1 <= 100) {
-    x--;
-    if (x < 0) {
-      x = 0;
-    }
-
-  }
-  if (potx1 >= 155) {
-    x++;
-  }
-  if (x > 320) {
-    x = 320;
-  }
-
-  if (poty1 <= 100) {
-    y++;
-  }
-  if (y > 240) {
-    y = 240;
-  }
-
-  if (155 <= poty1) {
-    y--;
-  }
-  if (y < 0) {
-    y = 0;
-  }
-
-  anim2 = (x) % 3;
-
-  // LCD_Sprite(x,y, 30, 33, tiburonS, 3, anim2, 0, 0 );
-  LCD_Sprite(x, y, 32, 33, ataqueMega, 3, anim2, 0, 0 );
+  //  if (potx1 <= 100) {
+  //    x--;
+  //    if (x < 0) {
+  //      x = 0;
+  //    }
+  //
+  //  }
+  //  if (potx1 >= 155) {
+  //    x++;
+  //  }
+  //  if (x > 320) {
+  //    x = 320;
+  //  }
+  //
+  //  if (poty1 <= 100) {
+  //    y++;
+  //  }
+  //  if (y > 240) {
+  //    y = 240;
+  //  }
+  //
+  //  if (155 <= poty1) {
+  //    y--;
+  //  }
+  //  if (y < 0) {
+  //    y = 0;
+  //  }
+  //
+  //  anim2 = (x) % 3;
+  //
+  //  // LCD_Sprite(x,y, 30, 33, tiburonS, 3, anim2, 0, 0 );
+  //  LCD_Sprite(x, y, 32, 33, ataqueMega, 3, anim2, 0, 0 );
   delay(15);
 }
