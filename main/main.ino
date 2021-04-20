@@ -23,6 +23,7 @@
 #include "pantalla.h"
 
 
+
 //color de fondo  0x2AAD
 //***************************************************************************************************************************************
 // Variables
@@ -49,20 +50,19 @@ int anim2;
 // Inicialización
 //***************************************************************************************************************************************
 void setup() {
+  pinMode(PA_7, INPUT_PULLUP);
 
-  Serial5.begin(115200);
-
-
-
-  //***************************************************************************************************************************************
+  
+  Serial5.begin(115200);  //el serial que se comunica con el esp32
 
   SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
-  Serial.begin(9600);
+  Serial.begin(9600); //serial como de la pantalla
   GPIOPadConfigSet(GPIO_PORTB_BASE, 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
   Serial.println("Inicio");
   LCD_Init();
   LCD_Clear(0x0);  //es el azul
   LCD_Clear(0x0528);
+  
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  207, 32, 32, piedras);
   }
@@ -179,7 +179,23 @@ void loop() {
   LCD_Sprite(x2,y2, 30, 33, tiburonS, 3, anim2, 0, 0 );
   LCD_Sprite(x, y, 32, 33, ataqueMega, 3, anim1, 0, 0 );
   delay(15);
+
+  //aqui va el codigo del ataque 
+  char ataque1 = digitalRead(PA_7);
+  if(ataque1 == 0){
+  String text1 = "ataque1";
+  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
+
+    
+  }
+
+   
+
+  
 }
+
+
+
 
 
 //funcion para hacer el split de la lectura serial
