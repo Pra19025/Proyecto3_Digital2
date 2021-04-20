@@ -44,8 +44,6 @@ void loop() {
   outputValue3 = map(sensorValue3, 0, 4095, 0, 255);
   outputValue4 = map(sensorValue4, 0, 4095, 0, 255);
     
-  //Serial.print("hola");
-  
   Serial2.print(outputValue1);
   Serial2.print(",");
   Serial2.print(outputValue2);
@@ -57,28 +55,7 @@ void loop() {
 
   Serial2.println(outputValue4);
 
-  //esto es ya con la tiva, es prueba
 
-while(Serial2.available()){
-  char varIN = Serial2.read();
-  if(varIN == 'A'){
-
-     // print the results to the Serial Monitor:
-  Serial2.print("X = ");
-  Serial2.print(outputValue1);
-
-  Serial2.print("\tY = ");
-  Serial2.println(outputValue2);
-  
-//joystick 2 
-  Serial2.print("X2 = ");
-  Serial2.print(outputValue3);
-
-  Serial2.print("\tY2 = ");
-  Serial2.println(outputValue4);
-  
-  }
-}
 
 
   delay(100);
