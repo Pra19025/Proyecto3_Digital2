@@ -42,10 +42,11 @@
 //int potx2 = 122;
 //int poty2 = 122;
 
-int inByte = 0;
+char inByte = 0;
 int x = 0;
 int y = 0;
 
+String datos ="";
 
 int anim2;
 //***************************************************************************************************************************************
@@ -53,7 +54,7 @@ int anim2;
 //***************************************************************************************************************************************
 void setup() {
 
-  Serial.begin(115200);
+  Serial5.begin(115200);
 
 
 
@@ -99,17 +100,21 @@ void loop() {
 
 
   // ESTO ES LO DE PRUEBA DE LECTURA DEL ESP32
-  Serial.print("hola");
+  //Serial.print("hola");
 
-  while (Serial.available() <= 0) {
-    Serial.println('A'); // send a capital A
-    delay(300);
-  }
+ 
   
-  if (Serial.available() > 0) {
+  while (Serial5.available() > 0) {
     // get incoming byte:
-    inByte = Serial.read();
-    Serial.print(inByte);
+    inByte = Serial5.read();
+    if(inByte == '\n'){
+      //convierto todod a datos
+      Serial.println(datos);
+      datos = "";
+    }else{
+      datos.concat(inByte);
+      
+    }
   }
 
   //  Serial.print("output X = ");

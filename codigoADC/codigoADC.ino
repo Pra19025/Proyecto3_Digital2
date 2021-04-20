@@ -28,6 +28,7 @@ int outputValue4 = 0;        // value output to the PWM (analog out)
 void setup() {
   // initialize serial communications at 9600 bps:
   Serial2.begin(115200);
+  //Serial.begin(115200);
 }
 
 void loop() {
@@ -43,24 +44,23 @@ void loop() {
   outputValue3 = map(sensorValue3, 0, 4095, 0, 255);
   outputValue4 = map(sensorValue4, 0, 4095, 0, 255);
     
- 
-  Serial2.print("X = ");
+  //Serial.print("hola");
+  
   Serial2.print(outputValue1);
- 
-  Serial2.print("\tY = ");
-  Serial2.println(outputValue2);
+  Serial2.print(",");
+  Serial2.print(outputValue2);
+  Serial2.print(",");
   
 //joystick 2 
-  Serial2.print("X2 = ");
   Serial2.print(outputValue3);
+  Serial2.print(",");
 
-  Serial2.print("\tY2 = ");
   Serial2.println(outputValue4);
 
   //esto es ya con la tiva, es prueba
 
 while(Serial2.available()){
-  char varIN = Serial.read();
+  char varIN = Serial2.read();
   if(varIN == 'A'){
 
      // print the results to the Serial Monitor:
