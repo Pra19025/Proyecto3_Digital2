@@ -28,25 +28,17 @@
 // Variables
 //***************************************************************************************************************************************
 
-//lectura del potenciómetro
-//const int analogInPin1 = PE_5;  // Analog input pin that the potentiometer is attached to
-//const int analogInPin2 = PE_2;  // Analog input pin that the potentiometer is attached to
-//int sensorValue1 = 0;        // value read from the pot
-//int outputValue1 = 0;        // value output to the PWM (analog out)
-//int sensorValue2 = 0;        // value read from the pot
-//int outputValue2 = 0;        // value output to the PWM (analog out)
 
 //control del joystick
-//int potx1 = 122;
-//int poty1 = 122;
-//int potx2 = 122;
-//int poty2 = 122;
+int potx1 = 122;
+int poty1 = 122;
+int potx2 = 122;
+int poty2 = 122;
 
-char inByte = 0;
 int x = 0;
 int y = 0;
 
-String datos ="";
+String datos = "";
 
 int anim2;
 //***************************************************************************************************************************************
@@ -87,78 +79,69 @@ void setup() {
 //***************************************************************************************************************************************
 void loop() {
 
-
-  //  // read the analog in value:
-  //  sensorValue1 = analogRead(analogInPin1);
-  //  // map it to the range of the analog out:
-  //  potx1 = map(sensorValue1, 0, 4095, 0, 255);
-  //
-  //  // read the analog in value:
-  //  sensorValue2 = analogRead(analogInPin2);
-  //  // map it to the range of the analog out:
-  //  poty1 = map(sensorValue2, 0, 4095, 0, 255);
-
-
-  // ESTO ES LO DE PRUEBA DE LECTURA DEL ESP32
-  //Serial.print("hola");
-
- 
-  
-  while (Serial5.available() > 0) {
-    // get incoming byte:
-    inByte = Serial5.read();
-    if(inByte == '\n'){
-      //convierto todod a datos
-      Serial.println(datos);
-      datos = "";
-    }else{
+  //aqui se reciben los datos del esp32 ( se reciben en el serial 5 )
+  while (Serial5.available()) {
+    char inByte = Serial5.read();
+    if (inByte != '\n') {
+      //convierto todo a datos
       datos.concat(inByte);
+
+    }
+
+    else {
+      Serial.println(datos);
+     
+      potx1 = (datos.substring(0, 3)).toInt();
+      poty1 = (datos.substring(4, 7)).toInt();
+      potx2 = (datos.substring(8, 11)).toInt();
+      poty2 = (datos.substring(12, 15)).toInt();
+    
+      //Serial.println((datos.substring(4, 7)));
       
+      datos = "";
     }
   }
 
-  //  Serial.print("output X = ");
-  //  Serial.print(potx1);
-  //
-  //  Serial.print("\t output Y = ");
-  //  Serial.println(poty1);
-  //  delay(10);
-  //
+
+
+
+ 
+
 
   //codigo para controlar la posición según joystick
   //la dimensión de la pantalla es: 320*240 pixeles
 
-  //  if (potx1 <= 100) {
-  //    x--;
-  //    if (x < 0) {
-  //      x = 0;
-  //    }
-  //
-  //  }
-  //  if (potx1 >= 155) {
-  //    x++;
-  //  }
-  //  if (x > 320) {
-  //    x = 320;
-  //  }
-  //
-  //  if (poty1 <= 100) {
-  //    y++;
-  //  }
-  //  if (y > 240) {
-  //    y = 240;
-  //  }
-  //
-  //  if (155 <= poty1) {
-  //    y--;
-  //  }
-  //  if (y < 0) {
-  //    y = 0;
-  //  }
-  //
-  //  anim2 = (x) % 3;
-  //
-  //  // LCD_Sprite(x,y, 30, 33, tiburonS, 3, anim2, 0, 0 );
-  //  LCD_Sprite(x, y, 32, 33, ataqueMega, 3, anim2, 0, 0 );
+  if (potx1 <= 100) {
+    x--;
+    if (x < 0) {
+      x = 0;
+    }
+
+  }
+  if (potx1 >= 155) {
+    x++;
+  }
+  if (x > 320) {
+    x = 320;
+  }
+
+  if (poty1 <= 100) {
+    y++;
+  }
+  if (y > 240) {
+    y = 240;
+  }
+
+  if (155 <= poty1) {
+    y--;
+  }
+  if (y < 0) {
+    y = 0;
+  }
+
+  anim2 = (x) % 3;
+
+  // LCD_Sprite(x,y, 30, 33, tiburonS, 3, anim2, 0, 0 );
+  LCD_Sprite(x, y, 32, 33, ataqueMega, 3, anim2, 0, 0 );
   delay(15);
 }
