@@ -1,14 +1,13 @@
 // Código para leer los analógicos en el esp32
 
 #include "pitches.h"
-#define NOTE_C4_1 260
 
 const int an1= 13;
 const int an2= 12;
 const int an3 = 14;
 const int an4 = 27;
 
-const int buzzerPin = 34;
+const int bocinaPin = 34;
 
 
 int sensorValue1 = 0;        // value read from the pot
@@ -24,27 +23,23 @@ int sensorValue4 = 0;        // value read from the pot
 int outputValue4 = 0;        // value output to the PWM (analog out)
 
 
-int melody[] = {
-   NOTE_C4_1,NOTE_C4, NOTE_D4, NOTE_C4,NOTE_F4,NOTE_E4,
-   NOTE_C4_1,NOTE_C4,NOTE_D4,NOTE_C4,NOTE_G4,NOTE_F4,
-   NOTE_C4_1,NOTE_C4,NOTE_C5,NOTE_A4,NOTE_F4,NOTE_F4, NOTE_E4,NOTE_D4,
-   NOTE_AS4,NOTE_AS4,NOTE_A4,NOTE_F4,NOTE_G4,NOTE_F4};
-
-int noteDurations[] = {
-  4, 4, 2, 2,2,1,
-  4, 4, 2, 2,2,1,
-  4, 4, 2, 2,4,4,2,1, 
-  4, 4, 2, 2,2,1};
 
 
 
 void setup() {
   // initialize serial communications at 9600 bps:
   Serial2.begin(115200);
-  pinMode(buzzerPin,OUTPUT);
 }
 
 void loop() {
+
+    for (unsigned long i = 0; i<705279 ;i++){
+      dacWrite(25, rawData[i]);
+      delayMicroseconds(38);
+    }
+
+
+    
   // read the analog in value:
   sensorValue1 = analogRead(an1);
   sensorValue2 = analogRead(an2);
@@ -68,24 +63,9 @@ void loop() {
 
   Serial2.println(outputValue4);
 
-  
-  for (int thisNote = 0; thisNote < 26; thisNote++) {
 
-    // to calculate the note duration, take one second 
-    // divided by the note type.
-    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-    int noteDuration = 1000/noteDurations[thisNote];
-    tone(buzzerPin, melody[thisNote],noteDuration);
-
-    int pauseBetweenNotes = noteDuration + 50;      //delay between pulse
-    delay(pauseBetweenNotes);
-    
-    noTone(buzzerPin);                // stop the tone playing
-  }
 
   
-
-
 
 
   delay(100);

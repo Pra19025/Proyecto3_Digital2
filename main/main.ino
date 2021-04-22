@@ -98,8 +98,8 @@ void setup() {
     LCD_Bitmap(i,  0, 31, 24, cloud);
   }
 
-  String text1 = "Pelea violenta";
-  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
+//  String text1 = "Pelea violenta";
+//  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
 
 
 }
@@ -202,7 +202,9 @@ void loop() {
 
 
 
-  LCD_Sprite(0, 0, 70, 10, vida, 3, 0,0,0);
+  LCD_Sprite(0, 32, 130, 26, vida, 3, 0,0,0);
+  LCD_Sprite(190,32, 130, 26, vida, 3, 0,0,0);
+
   
   LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, 1, 0 );
   LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, 0, 0 );
@@ -237,21 +239,6 @@ void loop() {
 
   }
 
-  // PREGUNTAR COMO HACER PARA QUE EL BUZZER FUNCIONE SIMULTÁNEAMENTE
-
-  //for (int thisNote = 0; thisNote < 26; thisNote++) {
-  //
-  //    // to calculate the note duration, take one second
-  //    // divided by the note type.
-  //    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-  //    int noteDuration = 1000/noteDurations[thisNote];
-  //    tone(buzzerPin, melody[thisNote],noteDuration);
-  //
-  //    int pauseBetweenNotes = noteDuration + 50;      //delay between pulse
-  //    delay(pauseBetweenNotes);
-  //
-  //    noTone(buzzerPin);                // stop the tone playing
-  //  }
 
 
 
