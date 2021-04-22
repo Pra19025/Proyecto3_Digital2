@@ -173,29 +173,29 @@ void loop() {
   if (potx2 <= 100) {
     x2--;
     if (x2 < 0) {
-      x2 = 0;
+      x2 = 33;
     }
 
   }
   if (potx2 >= 155) {
     x2++;
   }
-  if (x2 > 320) {
-    x2 = 320;
+  if (x2 > 287) {
+    x2 = 286;
   }
 
   if (poty2 <= 100) {
     y2++;
   }
-  if (y2 > 240) {
-    y2 = 240;
+  if (y2 > 174) {
+    y2 = 174;
   }
 
   if (155 <= poty2) {
     y2--;
   }
   if (y2 < 0) {
-    y2 = 0;
+    y2 = 32;
   }
 
   anim2 = (x2) % 3;
@@ -206,6 +206,10 @@ void loop() {
 
   LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, 1, 0 );
   LCD_Sprite(x, y, 28, 33, megaman, 3, anim1, 0, 0 );
+  //Correccion para jugadores
+  //H_line(x-1,  y, , unsigned int c);
+  V_line( x, y, y, 0x2AAD);
+  V_line( x2, y2, y2, 0x2AAD);
   delay(15);
 
   //aqui va el codigo del ataque

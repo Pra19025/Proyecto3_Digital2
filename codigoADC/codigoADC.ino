@@ -41,6 +41,7 @@ int noteDurations[] = {
 void setup() {
   // initialize serial communications at 9600 bps:
   Serial2.begin(115200);
+  Serial.begin(115200);
   pinMode(buzzerPin,OUTPUT);
 }
 
@@ -63,13 +64,22 @@ void loop() {
   Serial2.print(",");
   
 //joystick 2 
+  Serial.print(outputValue3);
+  Serial.print(",");
+
+  Serial.println(outputValue4);
+
+  Serial.print(outputValue1);
+  Serial.print(",");
+  Serial.print(outputValue2);
+  Serial.print(",");
+  
+//joystick 2 
   Serial2.print(outputValue3);
   Serial2.print(",");
 
   Serial2.println(outputValue4);
-
-  
-  for (int thisNote = 0; thisNote < 26; thisNote++) {
+ /* for (int thisNote = 0; thisNote < 26; thisNote++) {
 
     // to calculate the note duration, take one second 
     // divided by the note type.
@@ -81,7 +91,7 @@ void loop() {
     delay(pauseBetweenNotes);
     
     noTone(buzzerPin);                // stop the tone playing
-  }
+  }*/
 
   
 
