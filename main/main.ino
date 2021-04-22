@@ -40,7 +40,8 @@ int potx1 = 122;
 int poty1 = 122;
 int potx2 = 122;
 int poty2 = 122;
-
+int flipJ1 = 0;
+int flipJ2 = 1;
 
 //int melody[] = {
 //  NOTE_C4_1, NOTE_C4, NOTE_D4, NOTE_C4, NOTE_F4, NOTE_E4,
@@ -141,141 +142,130 @@ void loop() {
   //PRIMER JOYSTICK
   if (potx1 <= 100) {
     x--;
-    if (x < 0) {
-      x = 0;
-    }
-
+    flipJ1 = 1;
+    if (x < 0)x = 0;
   }
   if (potx1 >= 155) {
     x++;
+    flipJ1 = 0;
   }
-  if (x > 320) {
-    x = 320;
-  }
-
-  if (poty1 <= 100) {
-    y++;
-  }
-  if (y > 170) {
-    y = 170;
-  }
-
-  if (155 <= poty1) {
-    y--;
-  }
-  if (y < 32) {
-    y = 32;
-  }
+  if (x > 287)x = 287;
+  if (poty1 <= 100)y++;
+  if (y > 170)y = 170;
+  if (155 <= poty1)y--;
+  if (y < 32)y = 32;
 
   anim1 = (x) % 3;
 
   //SEGUNDO JOYSTICK
   if (potx2 <= 100) {
     x2--;
-    if (x2 < 0) {
-      x2 = 0;
-    }
-
+    flipJ2 = 1;
+    if (x2 < 0)x2 = 0;
   }
   if (potx2 >= 155) {
     x2++;
+    flipJ2 = 0;
   }
-  if (x2 > 320) {
-    x2 = 320;
-  }
-
-  if (poty2 <= 100) {
-    y2++;
-  }
-  if (y2 > 170) {
-    y2 = 170;
-  }
-
-  if (155 <= poty2) {
-    y2--;
-  }
-  if (y2 < 32) {
-    y2 = 32;
-  }
+  if (x2 > 320)x2 = 320;
+  if (poty2 <= 100)y2++;
+  if (y2 > 170)y2 = 170;
+  if (155 <= poty2)y2--;
+  if (y2 < 32) y2 = 32;
 
   anim2 = (x2) % 3;
 
 
 
-  LCD_Sprite(0, 0, 70, 10, vida, 3, 0,0,0);
-  
-  LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, 1, 0 );
-  LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, 0, 0 );
+  //  LCD_Sprite(0, 0, 70, 10, vida, 3, 0, 0, 0);
+
+  LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, flipJ2, 0 );
+  LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, flipJ1, 0 );
+  if(flipJ1==0)V_line(x - 1, y, 32, 0x2AAD);
+  if(flipJ1==1)V_line(x + 32, y, 32, 0x2AAD);
+  if(flipJ2==0)V_line(x2 - 1, y2, 32, 0x2AAD);
+  if(flipJ2==1)V_line(x2 + 32, y2, 32, 0x2AAD);
   delay(20);
 
   //aqui va el codigo del ataque
   char ataque1 = digitalRead(PA_7);
   if (ataque1 == 0) {
     int yataque = y;
-
-
-    for (m1 = x + 30; m1 < 320; m1++) {
-      int anim3 = (m1 / 32) % 3;
-      LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, 0, 0);
-      V_line(m1 - 1, yataque, 32, 0x2AAD);
-      delay(5);
+    if (flipJ1 == 0) {
+      for (m1 = x + 30; m1 < 288; m1++) {
+        int anim3 = (m1 / 32) % 3;
+        LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, flipJ1, 0);
+        V_line(m1 - 1, yataque, 32, 0x2AAD);
+        delay(5);
+      }
+    } else {
+      for (m1 = x - 30; m1 > 0; m1--) {
+        int anim3 = (m1 / 32) % 3;
+        LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, flipJ1, 0);
+        V_line(m1 + 32, yataque, 32, 0x2AAD);
+      }
     }
-
   }
-
 
   char ataque2 = digitalRead(PF_1);
   if (ataque2 == 0) {
     int yataque2 = y2;
-
-    for (k1 = x2 - 32; k1 > 0; k1--) {
-      int anim4 = (k1 / 32) % 3;
-      LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, 1, 0);
-      V_line(k1-1, yataque2, 32, 0x2AAD);
-      delay(5);
-    }
-
-  }
-
-  // PREGUNTAR COMO HACER PARA QUE EL BUZZER FUNCIONE SIMULTÁNEAMENTE
-
-  //for (int thisNote = 0; thisNote < 26; thisNote++) {
-  //
-  //    // to calculate the note duration, take one second
-  //    // divided by the note type.
-  //    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-  //    int noteDuration = 1000/noteDurations[thisNote];
-  //    tone(buzzerPin, melody[thisNote],noteDuration);
-  //
-  //    int pauseBetweenNotes = noteDuration + 50;      //delay between pulse
-  //    delay(pauseBetweenNotes);
-  //
-  //    noTone(buzzerPin);                // stop the tone playing
-  //  }
-
-
-
-
-}
-
-
-
-
-
-//funcion para hacer el split de la lectura serial
-String getValue(String data, char separator, int index)
-{
-  int found = 0;
-  int strIndex[] = {0, -1};
-  int maxIndex = data.length() - 1;
-
-  for (int i = 0; i <= maxIndex && found <= index; i++) {
-    if (data.charAt(i) == separator || i == maxIndex) {
-      found++;
-      strIndex[0] = strIndex[1] + 1;
-      strIndex[1] = (i == maxIndex) ? i + 1 : i;
+    if (flipJ2 == 1) {
+      for (k1 = x2 - 32; k1 > 0; k1--) {
+        int anim4 = (k1 / 32) % 3;
+        LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, 1, 0);
+        V_line(k1 + 32, yataque2, 32, 0x2AAD);
+        delay(5);
+      }
+    } else {
+      for (k1 = x2 + 30; k1 < 288; k1++) {
+        int anim4 = (k1 / 32) % 3;
+        LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, flipJ2, 0);
+        V_line(k1 - 1, yataque2, 32, 0x2AAD);
+        delay(5);
+      }
     }
   }
 
-  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
-}
+    // PREGUNTAR COMO HACER PARA QUE EL BUZZER FUNCIONE SIMULTÁNEAMENTE
+
+    //for (int thisNote = 0; thisNote < 26; thisNote++) {
+    //
+    //    // to calculate the note duration, take one second
+    //    // divided by the note type.
+    //    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+    //    int noteDuration = 1000/noteDurations[thisNote];
+    //    tone(buzzerPin, melody[thisNote],noteDuration);
+    //
+    //    int pauseBetweenNotes = noteDuration + 50;      //delay between pulse
+    //    delay(pauseBetweenNotes);
+    //
+    //    noTone(buzzerPin);                // stop the tone playing
+    //  }
+
+
+
+
+  }
+
+
+
+
+
+  //funcion para hacer el split de la lectura serial
+  String getValue(String data, char separator, int index)
+  {
+    int found = 0;
+    int strIndex[] = {0, -1};
+    int maxIndex = data.length() - 1;
+
+    for (int i = 0; i <= maxIndex && found <= index; i++) {
+      if (data.charAt(i) == separator || i == maxIndex) {
+        found++;
+        strIndex[0] = strIndex[1] + 1;
+        strIndex[1] = (i == maxIndex) ? i + 1 : i;
+      }
+    }
+
+    return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
+  }
