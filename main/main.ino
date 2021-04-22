@@ -59,10 +59,10 @@ int poty2 = 122;
 int buzzerPin = PE_3;
 
 int x = 0;
-int y = 0;
+int y = 175;
 
-int x2 = 0;
-int y2 = 0;
+int x2 = 290;
+int y2 = 170;
 
 int m1 = 0;
 int k1 = 0;
@@ -92,7 +92,7 @@ void setup() {
     LCD_Bitmap(i,  207, 32, 32, piedras);
   }
 
-  
+
 
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  0, 31, 24, cloud);
@@ -156,15 +156,15 @@ void loop() {
   if (poty1 <= 100) {
     y++;
   }
-  if (y > 240) {
-    y = 240;
+  if (y > 170) {
+    y = 170;
   }
 
   if (155 <= poty1) {
     y--;
   }
-  if (y < 0) {
-    y = 0;
+  if (y < 32) {
+    y = 32;
   }
 
   anim1 = (x) % 3;
@@ -187,49 +187,54 @@ void loop() {
   if (poty2 <= 100) {
     y2++;
   }
-  if (y2 > 240) {
-    y2 = 240;
+  if (y2 > 170) {
+    y2 = 170;
   }
 
   if (155 <= poty2) {
     y2--;
   }
-  if (y2 < 0) {
-    y2 = 0;
+  if (y2 < 32) {
+    y2 = 32;
   }
 
   anim2 = (x2) % 3;
 
 
 
-
-
+  LCD_Sprite(0, 0, 70, 10, vida, 3, 0,0,0);
+  
   LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, 1, 0 );
-  LCD_Sprite(x, y, 28, 33, megaman, 3, anim1, 0, 0 );
-  delay(15);
+  LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, 0, 0 );
+  delay(20);
 
   //aqui va el codigo del ataque
   char ataque1 = digitalRead(PA_7);
   if (ataque1 == 0) {
-    int yataque = y; 
-  
-    String text1 = "ataque1";
-    LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
+    int yataque = y;
 
-    for (m1 = x+30; m1 < 320; m1++) {
-      int anim3 = (m1/32) % 3; 
-      LCD_Sprite(m1, yataque, 32, 21, ataqueMega, 3, anim3, 0, 0);
-      V_line(m1 -1, yataque, 32, 0x2AAD);
+
+    for (m1 = x + 30; m1 < 320; m1++) {
+      int anim3 = (m1 / 32) % 3;
+      LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, 0, 0);
+      V_line(m1 - 1, yataque, 32, 0x2AAD);
       delay(5);
     }
-    
 
   }
 
 
   char ataque2 = digitalRead(PF_1);
   if (ataque2 == 0) {
-    //aquí va el ataque 2
+    int yataque2 = y2;
+
+    for (k1 = x2 - 32; k1 > 0; k1--) {
+      int anim4 = (k1 / 32) % 3;
+      LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, 1, 0);
+      V_line(k1-1, yataque2, 32, 0x2AAD);
+      delay(5);
+    }
+
   }
 
   // PREGUNTAR COMO HACER PARA QUE EL BUZZER FUNCIONE SIMULTÁNEAMENTE
