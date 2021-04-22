@@ -99,8 +99,8 @@ void setup() {
     LCD_Bitmap(i,  0, 31, 24, cloud);
   }
 
-  String text1 = "Pelea violenta";
-  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
+//  String text1 = "Pelea violenta";
+//  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
 
 
 }
@@ -120,7 +120,6 @@ void loop() {
 
     else {
       //Serial.println(datos);
-
       String p1 = getValue(datos, ',', 0);
       String p2 = getValue(datos, ',', 1);
       String p3 = getValue(datos, ',', 2);
@@ -134,9 +133,6 @@ void loop() {
       datos = "";
     }
   }
-
-
-
   //codigo para controlar la posición según joystick
   //la dimensión de la pantalla es: 320*240 pixeles
   //PRIMER JOYSTICK
@@ -175,18 +171,15 @@ void loop() {
 
   anim2 = (x2) % 3;
 
-
-
-  //  LCD_Sprite(0, 0, 70, 10, vida, 3, 0, 0, 0);
-
   LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, flipJ2, 0 );
   LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, flipJ1, 0 );
   if(flipJ1==0)V_line(x - 1, y, 32, 0x2AAD);
   if(flipJ1==1)V_line(x + 32, y, 32, 0x2AAD);
   if(flipJ2==0)V_line(x2 - 1, y2, 32, 0x2AAD);
   if(flipJ2==1)V_line(x2 + 32, y2, 32, 0x2AAD);
+  LCD_Sprite(0, 32, 130, 26, vida, 3, 0,0,0);
+  LCD_Sprite(190,32, 130, 26, vida, 3, 0,0,0);
   delay(20);
-
   //aqui va el codigo del ataque
   char ataque1 = digitalRead(PA_7);
   if (ataque1 == 0) {
@@ -226,31 +219,7 @@ void loop() {
       }
     }
   }
-
-    // PREGUNTAR COMO HACER PARA QUE EL BUZZER FUNCIONE SIMULTÁNEAMENTE
-
-    //for (int thisNote = 0; thisNote < 26; thisNote++) {
-    //
-    //    // to calculate the note duration, take one second
-    //    // divided by the note type.
-    //    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-    //    int noteDuration = 1000/noteDurations[thisNote];
-    //    tone(buzzerPin, melody[thisNote],noteDuration);
-    //
-    //    int pauseBetweenNotes = noteDuration + 50;      //delay between pulse
-    //    delay(pauseBetweenNotes);
-    //
-    //    noTone(buzzerPin);                // stop the tone playing
-    //  }
-
-
-
-
   }
-
-
-
-
 
   //funcion para hacer el split de la lectura serial
   String getValue(String data, char separator, int index)
