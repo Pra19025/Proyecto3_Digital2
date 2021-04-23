@@ -1,6 +1,7 @@
 // Código para leer los analógicos en el esp32
 
 #include "pitches.h"
+#include <driver/dac.h>
 
 const int an1 = 13;
 const int an2 = 12;
@@ -36,8 +37,8 @@ void IRAM_ATTR onTimer() {
   portENTER_CRITICAL_ISR(&timerMux);
   interruptCounter++;
   dacWrite(25, rawData[interruptCounter]);
-  if(interruptCounter >176328){
-    interruptCounter = 0; 
+  if (interruptCounter > 176328) {
+    interruptCounter = 0;
   }
   portEXIT_CRITICAL_ISR(&timerMux);
 
@@ -55,53 +56,43 @@ void setup() {
   timerAttachInterrupt(timer, &onTimer, true);
   timerAlarmWrite(timer, 3040, true); //3040 ticks se necesitan para que pasen 38uS
   timerAlarmEnable(timer);
+  
 
 
 }
 
 void loop() {
 
-//  if (interruptCounter > 0) {
-//  portENTER_CRITICAL(&timerMux);
-//    interruptCounter--;
-//    portEXIT_CRITICAL(&timerMux);
-//    i++;
-//    
-//  }
-//
-//  if (i >= 176328) {
-//  i = 0;
-//}
 
 
 
-// read the analog in value:
-sensorValue1 = analogRead(an1);
-               sensorValue2 = analogRead(an2);
-               sensorValue3 = analogRead(an3);
-               sensorValue4 = analogRead(an4);
+  // read the analog in value:
+  sensorValue1 = analogRead(an1);
+  sensorValue2 = analogRead(an2);
+  sensorValue3 = analogRead(an3);
+  sensorValue4 = analogRead(an4);
 
-               // map it to the range of the analog out:
-               outputValue1 = map(sensorValue1, 0, 4095, 0, 255);
-               outputValue2 = map(sensorValue2, 0, 4095, 0, 255);
-               outputValue3 = map(sensorValue3, 0, 4095, 0, 255);
-               outputValue4 = map(sensorValue4, 0, 4095, 0, 255);
+  // map it to the range of the analog out:
+  outputValue1 = map(sensorValue1, 0, 4095, 0, 255);
+  outputValue2 = map(sensorValue2, 0, 4095, 0, 255);
+  outputValue3 = map(sensorValue3, 0, 4095, 0, 255);
+  outputValue4 = map(sensorValue4, 0, 4095, 0, 255);
 
-               Serial2.print(outputValue1);
-               Serial2.print(",");
-               Serial2.print(outputValue2);
-               Serial2.print(",");
+  Serial2.print(outputValue1);
+  Serial2.print(",");
+  Serial2.print(outputValue2);
+  Serial2.print(",");
 
-               //joystick 2
-               Serial2.print(outputValue3);
-               Serial2.print(",");
+  //joystick 2
+  Serial2.print(outputValue3);
+  Serial2.print(",");
 
-               Serial2.println(outputValue4);
+  Serial2.println(outputValue4);
 
 
 
 
 
 
-               delay(100);
+  delay(100);
 }
