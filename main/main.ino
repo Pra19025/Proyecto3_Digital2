@@ -92,9 +92,8 @@ void setup() {
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  207, 32, 32, piedras);
   }
-
-
-
+  LCD_Sprite(0, 32, 130, 26, vida, 3, 0,0,0);
+  LCD_Sprite(190,32, 130, 26, vida, 3, 0,0,0);
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  0, 31, 24, cloud);
   }
@@ -149,7 +148,7 @@ void loop() {
   if (poty1 <= 100)y++;
   if (y > 170)y = 170;
   if (155 <= poty1)y--;
-  if (y < 32)y = 32;
+  if (y < 58)y = 58;
 
   anim1 = (x) % 3;
 
@@ -163,22 +162,26 @@ void loop() {
     x2++;
     flipJ2 = 0;
   }
-  if (x2 > 320)x2 = 320;
+  if (x2 > 287)x2 = 287;
   if (poty2 <= 100)y2++;
   if (y2 > 170)y2 = 170;
   if (155 <= poty2)y2--;
-  if (y2 < 32) y2 = 32;
+  if (y2 < 58) y2 = 58;
 
   anim2 = (x2) % 3;
 
   LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, flipJ2, 0 );
   LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, flipJ1, 0 );
+  
   if(flipJ1==0)V_line(x - 1, y, 32, 0x2AAD);
   if(flipJ1==1)V_line(x + 32, y, 32, 0x2AAD);
   if(flipJ2==0)V_line(x2 - 1, y2, 32, 0x2AAD);
   if(flipJ2==1)V_line(x2 + 32, y2, 32, 0x2AAD);
-  LCD_Sprite(0, 32, 130, 26, vida, 3, 0,0,0);
-  LCD_Sprite(190,32, 130, 26, vida, 3, 0,0,0);
+  H_line(x, y+32, 32, 0x2AAD);
+  H_line(x, y-1, 32, 0x2AAD);
+  H_line(x2, y2+32, 32, 0x2AAD);
+  H_line(x2, y2-1, 32, 0x2AAD);
+  
   delay(20);
   //aqui va el codigo del ataque
   char ataque1 = digitalRead(PA_7);
@@ -222,8 +225,7 @@ void loop() {
   }
 
   //funcion para hacer el split de la lectura serial
-  String getValue(String data, char separator, int index)
-  {
+  String getValue(String data, char separator, int index){
     int found = 0;
     int strIndex[] = {0, -1};
     int maxIndex = data.length() - 1;
