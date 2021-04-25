@@ -67,7 +67,7 @@ int y2 = 170;
 
 int m1 = 0;
 int k1 = 0;
-
+int barVidaJ1;
 
 String datos = "";
 int anim1;
@@ -87,19 +87,19 @@ void setup() {
   GPIOPadConfigSet(GPIO_PORTB_BASE, 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
   Serial.println("Inicio");
   LCD_Init();
-  LCD_Clear(0x2AAD);
+  LCD_Clear(0xFFFF);
 
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  207, 32, 32, piedras);
   }
-  LCD_Sprite(0, 32, 130, 26, vida, 3, 0,0,0);
-  LCD_Sprite(190,32, 130, 26, vida, 3, 0,0,0);
+  LCD_Sprite(0, 32, 130, 26, vida, 3, 0, 0, 0);
+  LCD_Sprite(190, 32, 130, 26, vida, 3, 0, 1, 0);
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  0, 31, 24, cloud);
   }
 
-//  String text1 = "Pelea violenta";
-//  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
+  //  String text1 = "Pelea violenta";
+  //  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
 
 
 }
@@ -107,7 +107,7 @@ void setup() {
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
-
+  while(barVidaJ1 < 3){
   //aqui se reciben los datos del esp32 ( se reciben en el serial 5 )
   while (Serial5.available()) {
     char inByte = Serial5.read();
@@ -172,16 +172,16 @@ void loop() {
 
   LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, flipJ2, 0 );
   LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, flipJ1, 0 );
-  
-  if(flipJ1==0)V_line(x - 1, y, 32, 0x2AAD);
-  if(flipJ1==1)V_line(x + 32, y, 32, 0x2AAD);
-  if(flipJ2==0)V_line(x2 - 1, y2, 32, 0x2AAD);
-  if(flipJ2==1)V_line(x2 + 32, y2, 32, 0x2AAD);
-  H_line(x, y+32, 32, 0x2AAD);
-  H_line(x, y-1, 32, 0x2AAD);
-  H_line(x2, y2+32, 32, 0x2AAD);
-  H_line(x2, y2-1, 32, 0x2AAD);
-  
+
+  if (flipJ1 == 0)V_line(x - 1, y, 32, 0x2AAD);
+  if (flipJ1 == 1)V_line(x + 32, y, 32, 0x2AAD);
+  if (flipJ2 == 0)V_line(x2 - 1, y2, 32, 0x2AAD);
+  if (flipJ2 == 1)V_line(x2 + 32, y2, 32, 0x2AAD);
+  H_line(x, y + 32, 32, 0x2AAD);
+  H_line(x, y - 1, 32, 0x2AAD);
+  H_line(x2, y2 + 32, 32, 0x2AAD);
+  H_line(x2, y2 - 1, 32, 0x2AAD);
+
   delay(20);
   //aqui va el codigo del ataque
   char ataque1 = digitalRead(PA_7);
@@ -202,7 +202,6 @@ void loop() {
       }
     }
   }
-
   char ataque2 = digitalRead(PF_1);
   if (ataque2 == 0) {
     int yataque2 = y2;
@@ -222,21 +221,26 @@ void loop() {
       }
     }
   }
+  if(ataque2==0 & (((y2-y<32)&(y2-y>=0))|(y-y2>=0)&(y-y2<21))){
+    barVidaJ1++;
+    LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0);
   }
+  }
+}
 
-  //funcion para hacer el split de la lectura serial
-  String getValue(String data, char separator, int index){
-    int found = 0;
-    int strIndex[] = {0, -1};
-    int maxIndex = data.length() - 1;
+//funcion para hacer el split de la lectura serial
+String getValue(String data, char separator, int index) {
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length() - 1;
 
-    for (int i = 0; i <= maxIndex && found <= index; i++) {
-      if (data.charAt(i) == separator || i == maxIndex) {
-        found++;
-        strIndex[0] = strIndex[1] + 1;
-        strIndex[1] = (i == maxIndex) ? i + 1 : i;
-      }
+  for (int i = 0; i <= maxIndex && found <= index; i++) {
+    if (data.charAt(i) == separator || i == maxIndex) {
+      found++;
+      strIndex[0] = strIndex[1] + 1;
+      strIndex[1] = (i == maxIndex) ? i + 1 : i;
     }
-
-    return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
   }
+
+  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
