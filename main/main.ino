@@ -59,15 +59,16 @@ int flipJ2 = 1;
 
 int buzzerPin = PE_3;
 
-int x = 0;
-int y = 175;
+int x;
+int y;
 
-int x2 = 290;
-int y2 = 170;
+int x2;
+int y2;
 
 int m1 = 0;
 int k1 = 0;
 int barVidaJ1;
+int barVidaJ2;
 
 String datos = "";
 int anim1;
@@ -87,7 +88,7 @@ void setup() {
   GPIOPadConfigSet(GPIO_PORTB_BASE, 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
   Serial.println("Inicio");
   LCD_Init();
-  LCD_Clear(0xFFFF);
+  LCD_Clear(0x2AAD);
 
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  207, 32, 32, piedras);
@@ -107,124 +108,155 @@ void setup() {
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
-  while(barVidaJ1 < 3){
-  //aqui se reciben los datos del esp32 ( se reciben en el serial 5 )
-  while (Serial5.available()) {
-    char inByte = Serial5.read();
-    if (inByte != '\n') {
-      //convierto todo a datos
-      datos.concat(inByte);
+  barVidaJ2 = barVidaJ1 = 0 ;
+  x = 0;
+  y = 175;
+  x2 = 290;
+  y2 = 170;
+  FillRect(90, 100, 150, 60, 0x2AAD);
+  while (barVidaJ1 < 3 & barVidaJ2 < 3 ) {
+    //aqui se reciben los datos del esp32 ( se reciben en el serial 5 )
+    while (Serial5.available()) {
+      char inByte = Serial5.read();
+      if (inByte != '\n') {
+        //convierto todo a datos
+        datos.concat(inByte);
 
-    }
-
-    else {
-      //Serial.println(datos);
-      String p1 = getValue(datos, ',', 0);
-      String p2 = getValue(datos, ',', 1);
-      String p3 = getValue(datos, ',', 2);
-      String p4 = getValue(datos, ',', 3);
-
-      potx1 = p1.toInt();
-      poty1 = p2.toInt();
-      potx2 = p3.toInt();
-      poty2 = p4.toInt();
-
-      datos = "";
-    }
-  }
-  //codigo para controlar la posición según joystick
-  //la dimensión de la pantalla es: 320*240 pixeles
-  //PRIMER JOYSTICK
-  if (potx1 <= 100) {
-    x--;
-    flipJ1 = 1;
-    if (x < 0)x = 0;
-  }
-  if (potx1 >= 155) {
-    x++;
-    flipJ1 = 0;
-  }
-  if (x > 287)x = 287;
-  if (poty1 <= 100)y++;
-  if (y > 170)y = 170;
-  if (155 <= poty1)y--;
-  if (y < 58)y = 58;
-
-  anim1 = (x) % 3;
-
-  //SEGUNDO JOYSTICK
-  if (potx2 <= 100) {
-    x2--;
-    flipJ2 = 1;
-    if (x2 < 0)x2 = 0;
-  }
-  if (potx2 >= 155) {
-    x2++;
-    flipJ2 = 0;
-  }
-  if (x2 > 287)x2 = 287;
-  if (poty2 <= 100)y2++;
-  if (y2 > 170)y2 = 170;
-  if (155 <= poty2)y2--;
-  if (y2 < 58) y2 = 58;
-
-  anim2 = (x2) % 3;
-
-  LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, flipJ2, 0 );
-  LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, flipJ1, 0 );
-
-  if (flipJ1 == 0)V_line(x - 1, y, 32, 0x2AAD);
-  if (flipJ1 == 1)V_line(x + 32, y, 32, 0x2AAD);
-  if (flipJ2 == 0)V_line(x2 - 1, y2, 32, 0x2AAD);
-  if (flipJ2 == 1)V_line(x2 + 32, y2, 32, 0x2AAD);
-  H_line(x, y + 32, 32, 0x2AAD);
-  H_line(x, y - 1, 32, 0x2AAD);
-  H_line(x2, y2 + 32, 32, 0x2AAD);
-  H_line(x2, y2 - 1, 32, 0x2AAD);
-
-  delay(20);
-  //aqui va el codigo del ataque
-  char ataque1 = digitalRead(PA_7);
-  if (ataque1 == 0) {
-    int yataque = y;
-    if (flipJ1 == 0) {
-      for (m1 = x + 30; m1 < 288; m1++) {
-        int anim3 = (m1 / 32) % 3;
-        LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, flipJ1, 0);
-        V_line(m1 - 1, yataque, 32, 0x2AAD);
-        delay(5);
       }
-    } else {
-      for (m1 = x - 30; m1 > 0; m1--) {
-        int anim3 = (m1 / 32) % 3;
-        LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, flipJ1, 0);
-        V_line(m1 + 32, yataque, 32, 0x2AAD);
+
+      else {
+        //Serial.println(datos);
+        String p1 = getValue(datos, ',', 0);
+        String p2 = getValue(datos, ',', 1);
+        String p3 = getValue(datos, ',', 2);
+        String p4 = getValue(datos, ',', 3);
+
+        potx1 = p1.toInt();
+        poty1 = p2.toInt();
+        potx2 = p3.toInt();
+        poty2 = p4.toInt();
+
+        datos = "";
       }
     }
-  }
-  char ataque2 = digitalRead(PF_1);
-  if (ataque2 == 0) {
-    int yataque2 = y2;
-    if (flipJ2 == 1) {
-      for (k1 = x2 - 32; k1 > 0; k1--) {
-        int anim4 = (k1 / 32) % 3;
-        LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, 1, 0);
-        V_line(k1 + 32, yataque2, 32, 0x2AAD);
-        delay(5);
-      }
-    } else {
-      for (k1 = x2 + 30; k1 < 288; k1++) {
-        int anim4 = (k1 / 32) % 3;
-        LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, flipJ2, 0);
-        V_line(k1 - 1, yataque2, 32, 0x2AAD);
-        delay(5);
+    //codigo para controlar la posición según joystick
+    //la dimensión de la pantalla es: 320*240 pixeles
+    //PRIMER JOYSTICK
+    if (potx1 <= 100) {
+      x--;
+      flipJ1 = 1;
+      if (x < 0)x = 0;
+    }
+    if (potx1 >= 155) {
+      x++;
+      flipJ1 = 0;
+    }
+    if (x > 287)x = 287;
+    if (poty1 <= 100)y++;
+    if (y > 170)y = 170;
+    if (155 <= poty1)y--;
+    if (y < 58)y = 58;
+
+    anim1 = (x) % 3;
+
+    //SEGUNDO JOYSTICK
+    if (potx2 <= 100) {
+      x2--;
+      flipJ2 = 1;
+      if (x2 < 0)x2 = 0;
+    }
+    if (potx2 >= 155) {
+      x2++;
+      flipJ2 = 0;
+    }
+    if (x2 > 287)x2 = 287;
+    if (poty2 <= 100)y2++;
+    if (y2 > 170)y2 = 170;
+    if (155 <= poty2)y2--;
+    if (y2 < 58) y2 = 58;
+
+    anim2 = (x2) % 3;
+
+    LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, flipJ2, 0 );
+    LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, flipJ1, 0 );
+
+    if (flipJ1 == 0)V_line(x - 1, y, 32, 0x2AAD);
+    if (flipJ1 == 1)V_line(x + 32, y, 32, 0x2AAD);
+    if (flipJ2 == 0)V_line(x2 - 1, y2, 32, 0x2AAD);
+    if (flipJ2 == 1)V_line(x2 + 32, y2, 32, 0x2AAD);
+    H_line(x, y + 32, 32, 0x2AAD);
+    H_line(x, y - 1, 32, 0x2AAD);
+    H_line(x2, y2 + 32, 32, 0x2AAD);
+    H_line(x2, y2 - 1, 32, 0x2AAD);
+
+    delay(20);
+    //aqui va el codigo del ataque
+    char ataque1 = digitalRead(PA_7);
+    if (ataque1 == 0) {
+      int yataque = y;
+      if (flipJ1 == 0) {
+        for (m1 = x + 30; m1 < 288; m1++) {
+          int anim3 = (m1 / 32) % 3;
+          LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, flipJ1, 0);
+          V_line(m1 - 1, yataque, 32, 0x2AAD);
+          delay(5);
+        }
+      } else {
+        for (m1 = x - 30; m1 > 0; m1--) {
+          int anim3 = (m1 / 32) % 3;
+          LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, flipJ1, 0);
+          V_line(m1 + 32, yataque, 32, 0x2AAD);
+        }
       }
     }
+    char ataque2 = digitalRead(PF_1);
+    if (ataque2 == 0) {
+      int yataque2 = y2;
+      if (flipJ2 == 1) {
+        for (k1 = x2 - 32; k1 > 0; k1--) {
+          int anim4 = (k1 / 32) % 3;
+          LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, 1, 0);
+          V_line(k1 + 32, yataque2, 32, 0x2AAD);
+          delay(5);
+        }
+      } else {
+        for (k1 = x2 + 30; k1 < 288; k1++) {
+          int anim4 = (k1 / 32) % 3;
+          LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, flipJ2, 0);
+          V_line(k1 - 1, yataque2, 32, 0x2AAD);
+          delay(5);
+        }
+      }
+    }
+    //La condicional expresa:
+    //si: El boton se presiono y La distancia entre el bitmap de pos. más grande es menor a: 
+    //              -> 30 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
+   //              -> 21 (largo del ataque) si el ataque pasa por encima del personaje. 
+    if (ataque2 == 0 & (((y2 - y < 30) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 21))) {//si las condiciones se cumplen:
+      barVidaJ1++; //Se aumenta el valor de la variable valores posibles 1,2 o 3 (este ultimo rompe el while)
+      LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0); //se varia el parametro index (1 = vida amarilla y 2 = vida roja)
+    }
+    //Misma logica de arriba solo que: -> 29 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
+    //                                  -> 21 (aprox. largo del ataque) si el ataque pasa por encima del personaje. 
+    if (ataque1 == 0 & (((y2 - y < 29) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 25))) {
+      barVidaJ2++;
+      LCD_Sprite(190, 32, 130, 26, vida, 3, barVidaJ2, 1, 0);
+    }
+  }//Fin del While
+  //En estos if's se escribe quien es el ganador
+  if (barVidaJ2 == 3) {
+    String text1 = "J1 Wins";
+    LCD_Print(text1, 90, 100, 2, 0xffff, 0x2AAD);
+    delay(1000);
+    String text2 = "Fatality";
+    LCD_Print(text2, 90, 132, 2, 0xffff , 0x2AAD);
   }
-  if(ataque2==0 & (((y2-y<32)&(y2-y>=0))|(y-y2>=0)&(y-y2<21))){
-    barVidaJ1++;
-    LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0);
-  }
+  if (barVidaJ1 == 3) {
+    String text1 = "J2 Wins";
+    LCD_Print(text1, 90, 100, 2, 0xffff, 0x2AAD);
+    delay(1000);
+    String text2 = "Fatality";
+    LCD_Print(text2, 90, 132, 2, 0xffff , 0x2AAD);
   }
 }
 
