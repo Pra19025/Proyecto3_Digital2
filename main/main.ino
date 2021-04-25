@@ -42,7 +42,6 @@ int flipJ1 = 0;
 int flipJ2 = 1;
 
 
-
 int buzzerPin = PE_3;
 
 int x;
@@ -215,15 +214,15 @@ void loop() {
       }
     }
     //La condicional expresa:
-    //si: El boton se presiono y La distancia entre el bitmap de pos. más grande es menor a: 
+    //si: El boton se presiono y La distancia entre el bitmap de pos. más grande es menor a:
     //              -> 30 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
-   //              -> 21 (largo del ataque) si el ataque pasa por encima del personaje. 
+   //              -> 21 (largo del ataque) si el ataque pasa por encima del personaje.
     if (ataque2 == 0 & (((y2 - y < 30) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 21))) {//si las condiciones se cumplen:
       barVidaJ1++; //Se aumenta el valor de la variable valores posibles 1,2 o 3 (este ultimo rompe el while)
       LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0); //se varia el parametro index (1 = vida amarilla y 2 = vida roja)
     }
     //Misma logica de arriba solo que: -> 29 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
-    //                                  -> 21 (aprox. largo del ataque) si el ataque pasa por encima del personaje. 
+    //                                  -> 21 (aprox. largo del ataque) si el ataque pasa por encima del personaje.
     if (ataque1 == 0 & (((y2 - y < 29) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 25))) {
       barVidaJ2++;
       LCD_Sprite(190, 32, 130, 26, vida, 3, barVidaJ2, 1, 0);
