@@ -93,14 +93,13 @@ void setup() {
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  207, 32, 32, piedras);
   }
-  LCD_Sprite(0, 32, 130, 26, vida, 3, 0, 0, 0);
-  LCD_Sprite(190, 32, 130, 26, vida, 3, 0, 1, 0);
+
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  0, 31, 24, cloud);
   }
 
-  //  String text1 = "Pelea violenta";
-  //  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
+   String text1 = "Pelea violenta";
+   LCD_Print(text1, 20, 100, 2, 0xffff , 0x2AAD);
 
 
 }
@@ -108,23 +107,24 @@ void setup() {
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
-  barVidaJ2 = barVidaJ1 = 0 ;
+  barVidaJ2 = barVidaJ1 = 0;
+  LCD_Sprite(0, 32, 130, 26, vida, 3, 0, 0, 0);
+  LCD_Sprite(190, 32, 130, 26, vida, 3, 0, 1, 0);
   x = 0;
   y = 175;
   x2 = 290;
   y2 = 170;
-  FillRect(90, 100, 150, 60, 0x2AAD);
+  delay(1000);
+  FillRect(0, 58, 320, 149, 0x2AAD);
   while (barVidaJ1 < 3 & barVidaJ2 < 3 ) {
+   
     //aqui se reciben los datos del esp32 ( se reciben en el serial 5 )
     while (Serial5.available()) {
       char inByte = Serial5.read();
       if (inByte != '\n') {
         //convierto todo a datos
         datos.concat(inByte);
-
-      }
-
-      else {
+      }else {
         //Serial.println(datos);
         String p1 = getValue(datos, ',', 0);
         String p2 = getValue(datos, ',', 1);
@@ -242,6 +242,7 @@ void loop() {
       barVidaJ2++;
       LCD_Sprite(190, 32, 130, 26, vida, 3, barVidaJ2, 1, 0);
     }
+    
   }//Fin del While
   //En estos if's se escribe quien es el ganador
   if (barVidaJ2 == 3) {
