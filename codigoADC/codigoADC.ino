@@ -54,8 +54,8 @@ void setup() {
 
   timer = timerBegin(0, 1, true);   //prescaler = 1, para que corra a 80 Mhz
   timerAttachInterrupt(timer, &onTimer, true);
-  timerAlarmWrite(timer, 3040, true); //3040 ticks se necesitan para que pasen 38uS
-  timerAlarmEnable(timer);
+  timerAlarmWrite(timer, 3100, true); //3040 ticks se necesitan para que pasen 38uS
+  timerAlarmEnable(timer);  //tenia 3040
   
 
 
