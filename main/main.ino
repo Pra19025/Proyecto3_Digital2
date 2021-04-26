@@ -225,46 +225,37 @@ void loop() {
         }
       }
     }
+    //--------------Rutinas para comprobar que el ataque acerto-------------------------------
+    //----Para el ataque de la ballena------------
     if (ataque2 == 0 ) {
       FillRect(k1, y2, 32, 21, 0x2AAD);
-      int d = y2 - y; 
-      int a = k1 - x;
-      int b = x - x2;
-      int hit = 0;
-      if ((flipJ2 == 0) & ((a >= 0) & (b >= 0)))hit++;
-      if ((flipJ2 == 1) & (((-a) >= 0) & ((-b) >= 0)))hit++;
-      if ((((d < 30) & (d >= 0)) | ((-d) >= 0) & ((-d) < 21)) & (hit == 1))barVidaJ1++;
-      LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0);
+      int h = y2 - y; //se obtiene la posicion en el eje Y de J2 respecto a J1
+      int d = x - x2; //se obtiene la posicion en el eje X de J1 respecto a J2
+      int r = k1 - x; //se obtiene la posicion en el eje X de J1 respecto al Ataque
+      int hit = 0; //sirve para saber si el ataque impacto o no en J1
+      if ((flipJ2 == 0) & ((r >= 0) & (d >= 0)))hit++; //para acertar el ataque el jugador viendo hacia la derecha
+      //ambas distancias tienen que ser positivas.
+      if ((flipJ2 == 1) & ((r <= 0) & (d <= 0)))hit++; //para acertar el ataque el jugador viendo hacia la izquierda
+      //ambas distancias tienen que ser negativas.
+      if ((((h < 30) & (h >= 0)) | (h <= 0) & (h > -21)) & (hit == 1))barVidaJ1++; //para acertar el personaje atacado
+      //tiene que estar como máximo 29 unidades arriba del ataque y 21 por debajo del ataque
+      LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0); //el sprite de la vida cambia solo si se cumplen la condiciones ant.
     }
+     //----Para el ataque de megaman------------
+     //la logica es la misma que el de la ballena
     if (ataque1  == 0 ) {
       FillRect(m1, y, 33, 29, 0x2AAD);
-      int d = y2 - y;
-      int a = m1 - x2;
-      int b = x2 - x;
+      int h = y2 - y;
+      int d = x2 - x;
+      int r = m1 - x2;
       int hit = 0;
-      if ((flipJ1 == 0) & ((a >= 0) & (b >= 0)))hit++;
-      if ((flipJ1 == 1) & (((-a) >= 0) & ((-b) >= 0)))hit++;
-      if ((((d < 30) & (d >= 0)) | ((-d) >= 0) & ((-d) < 25)) & (hit == 1))barVidaJ2++;
+      if ((flipJ1 == 0) & ((r >= 0) & (d >= 0)))hit++;
+      if ((flipJ1 == 1) & ((r <= 0) & (d <= 0)))hit++;
+      if ((((h < 30) & (h >= 0)) | (h <= 0) & (h > -25)) & (hit == 1))barVidaJ2++;
       LCD_Sprite(190, 32, 130, 26, vida, 3, barVidaJ2, 1, 0);
     }
-
-
-    //La condicional expresa:
-    //si: El boton se presiono y La distancia entre el bitmap de pos. más grande es menor a:
-    //              -> 30 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
-    //              -> 21 (largo del ataque) si el ataque pasa por encima del personaje.
-    /*  if (ataque2 == 0 & (((y2 - y < 30) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 21))) {//si las condiciones se cumplen:
-        barVidaJ1++; //Se aumenta el valor de la variable valores posibles 1,2 o 3 (este ultimo rompe el while)
-        LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0); //se varia el parametro index (1 = vida amarilla y 2 = vida roja)
-      }*/
-    //Misma logica de arriba solo que: -> 29 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
-    //                                  -> 21 (aprox. largo del ataque) si el ataque pasa por encima del personaje.
-    /*  if (ataque1 == 0 & (((y2 - y < 29) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 25))) {
-        barVidaJ2++;
-        LCD_Sprite(190, 32, 130, 26, vida, 3, barVidaJ2, 1, 0);
-      }*/
-
   }//Fin del While
+  
   //En estos if's se escribe quien es el ganador
   if (barVidaJ2 == 3) {
     String text1 = "J1 Wins";
