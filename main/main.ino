@@ -4,11 +4,14 @@
 //8/04/2021
 
 
+//#include "pitches.h"
+//#define NOTE_C4_1 260
 
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <TM4C123GH6PM.h>
+
 
 // para la tarjeta SD
 #include <SPI.h>
@@ -48,6 +51,10 @@ int poty2 = 122;
 int flipJ1 = 0;
 int flipJ2 = 1;
 
+//estas variables sirven para controlar la memoria de partidas ganadas por los distintos jugadores
+String J1;
+String J2;
+String cadena = "";
 
 int buzzerPin = PE_3;
 
@@ -62,12 +69,6 @@ int k1 = 0;
 int barVidaJ1;
 int barVidaJ2;
 
-//estas variables sirven para controlar la memoria de partidas ganadas por los distintos jugadores
-String J1;
-String J2;
-String cadena = "";
-
-
 String datos = "";
 int anim1;
 int anim2;
@@ -77,7 +78,6 @@ int anim2;
 void setup() {
   pinMode(PA_7, INPUT_PULLUP);
   pinMode(PF_1, INPUT_PULLUP);
-
 
   Serial5.begin(115200);  //el serial que se comunica con el esp32
 
@@ -91,18 +91,15 @@ void setup() {
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  207, 32, 32, piedras);
   }
-  LCD_Sprite(0, 32, 130, 26, vida, 3, 0, 0, 0);
-  LCD_Sprite(190, 32, 130, 26, vida, 3, 0, 1, 0);
+
   for (int i = 0; i < 320 - 30; i = i + 32) {
     LCD_Bitmap(i,  0, 31, 24, cloud);
   }
 
-
-  //  String text1 = "Pelea violenta";
-  //  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
-
   String text1 = "Pelea violenta";
   LCD_Print(text1, 20, 100, 2, 0xffff , 0x2AAD);
+
+
 
 
   //************************de la tarjeta SD*******************
@@ -120,63 +117,21 @@ void setup() {
 
 
 
-
 }
 //***************************************************************************************************************************************
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
-
-  barVidaJ2 = barVidaJ1 = 0 ;
-
-
-
-  // codigo sd
-  //Primer se leen los resultados previos
-
-  scores = SD.open("/res.txt");
-  if (scores) {
-    //Serial.println("res.txt:");
-
-    // read from the file until there's nothing else in it:
-    while (scores.available()) {
-      cadena = cadena + "," + scores.read();
-
-    }
-
-    Serial.println(cadena);
-    // close the file:
-    scores.close();
-    //se resta el 48 debido a que se obtiene el valor en ASCII 
-    
-    J1 = getValue(cadena, ',', 1).toInt() - 48;
-    J2 = getValue(cadena, ',', 3).toInt() - 48;
-
-    //Serial.println(J1);
-    //Serial.print(J2);
-
-  } else {
-    // if the file didn't open, print an error:
-    Serial.println("error opening res.txt");
-  }
-
-  cadena = "";
-
-
-
   barVidaJ2 = barVidaJ1 = 0;
   LCD_Sprite(0, 32, 130, 26, vida, 3, 0, 0, 0);
   LCD_Sprite(190, 32, 130, 26, vida, 3, 0, 1, 0);
-
   x = 0;
   y = 175;
   x2 = 290;
   y2 = 170;
-  FillRect(90, 100, 150, 60, 0x2AAD);
+  delay(1000);
+  FillRect(0, 58, 320, 149, 0x2AAD);
   while (barVidaJ1 < 3 & barVidaJ2 < 3 ) {
-
-
-
 
     //aqui se reciben los datos del esp32 ( se reciben en el serial 5 )
     while (Serial5.available()) {
@@ -184,10 +139,8 @@ void loop() {
       if (inByte != '\n') {
         //convierto todo a datos
         datos.concat(inByte);
-      }
-      else {
-
-
+      } else {
+        //Serial.println(datos);
         String p1 = getValue(datos, ',', 0);
         String p2 = getValue(datos, ',', 1);
         String p3 = getValue(datos, ',', 2);
@@ -219,8 +172,6 @@ void loop() {
     if (155 <= poty1)y--;
     if (y < 58)y = 58;
 
-    anim1 = (x) % 3;
-
     //SEGUNDO JOYSTICK
     if (potx2 <= 100) {
       x2--;
@@ -237,8 +188,8 @@ void loop() {
     if (155 <= poty2)y2--;
     if (y2 < 58) y2 = 58;
 
-    anim2 = (x2) % 3;
-
+    anim2 = (x2) % 2;
+    anim1 = (x) % 3;
     LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, flipJ2, 0 );
     LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, flipJ1, 0 );
 
@@ -261,7 +212,7 @@ void loop() {
           int anim3 = (m1 / 32) % 3;
           LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, flipJ1, 0);
           V_line(m1 - 1, yataque, 32, 0x2AAD);
-          delay(5);
+          //delay(5);
         }
       } else {
         for (m1 = x - 30; m1 > 0; m1--) {
@@ -279,44 +230,52 @@ void loop() {
           int anim4 = (k1 / 32) % 3;
           LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, 1, 0);
           V_line(k1 + 32, yataque2, 32, 0x2AAD);
-          delay(5);
+          //delay(5);
         }
       } else {
         for (k1 = x2 + 30; k1 < 288; k1++) {
           int anim4 = (k1 / 32) % 3;
           LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, flipJ2, 0);
           V_line(k1 - 1, yataque2, 32, 0x2AAD);
-          delay(5);
+          //delay(5);
         }
       }
     }
-    //La condicional expresa:
-    //si: El boton se presiono y La distancia entre el bitmap de pos. más grande es menor a:
-    //              -> 30 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
-
-   //              -> 21 (largo del ataque) si el ataque pasa por encima del personaje.
-
-    //              -> 21 (largo del ataque) si el ataque pasa por encima del personaje.
-
-    if (ataque2 == 0 & (((y2 - y < 30) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 21))) {//si las condiciones se cumplen:
-      barVidaJ1++; //Se aumenta el valor de la variable valores posibles 1,2 o 3 (este ultimo rompe el while)
-      LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0); //se varia el parametro index (1 = vida amarilla y 2 = vida roja)
+    //--------------Rutinas para comprobar que el ataque acerto-------------------------------
+    //----Para el ataque de la ballena------------
+    if (ataque2 == 0 ) {
+      FillRect(k1, y2, 32, 21, 0x2AAD);
+      int h = y2 - y; //se obtiene la posicion en el eje Y de J2 respecto a J1
+      int d = x - x2; //se obtiene la posicion en el eje X de J1 respecto a J2
+      int r = k1 - x; //se obtiene la posicion en el eje X de J1 respecto al Ataque
+      int hit = 0; //sirve para saber si el ataque impacto o no en J1
+      if ((flipJ2 == 0) & ((r >= 0) & (d >= 0)))hit++; //para acertar el ataque el jugador viendo hacia la derecha
+      //ambas distancias tienen que ser positivas.
+      if ((flipJ2 == 1) & ((r <= 0) & (d <= 0)))hit++; //para acertar el ataque el jugador viendo hacia la izquierda
+      //ambas distancias tienen que ser negativas.
+      if ((((h < 30) & (h >= 0)) | (h <= 0) & (h > -21)) & (hit == 1))barVidaJ1++; //para acertar el personaje atacado
+      //tiene que estar como máximo 29 unidades arriba del ataque y 21 por debajo del ataque
+      LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0); //el sprite de la vida cambia solo si se cumplen la condiciones ant.
     }
-    //Misma logica de arriba solo que: -> 29 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
-    //                                  -> 21 (aprox. largo del ataque) si el ataque pasa por encima del personaje.
-    if (ataque1 == 0 & (((y2 - y < 29) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 25))) {
-      barVidaJ2++;
+    //----Para el ataque de megaman------------
+    //la logica es la misma que el de la ballena
+    if (ataque1  == 0 ) {
+      FillRect(m1, y, 33, 29, 0x2AAD);
+      int h = y2 - y;
+      int d = x2 - x;
+      int r = m1 - x2;
+      int hit = 0;
+      if ((flipJ1 == 0) & ((r >= 0) & (d >= 0)))hit++;
+      if ((flipJ1 == 1) & ((r <= 0) & (d <= 0)))hit++;
+      if ((((h < 30) & (h >= 0)) | (h <= 0) & (h > -25)) & (hit == 1))barVidaJ2++;
       LCD_Sprite(190, 32, 130, 26, vida, 3, barVidaJ2, 1, 0);
     }
-
-
-
-
   }//Fin del While
+
   //En estos if's se escribe quien es el ganador
   if (barVidaJ2 == 3) {
     String text1 = "J1 Wins";
-    J1 = J1.toInt()+1;
+    J1 = J1.toInt() + 1;
     LCD_Print(text1, 90, 100, 2, 0xffff, 0x2AAD);
     delay(1000);
     String text2 = "Fatality";
@@ -331,31 +290,32 @@ void loop() {
     LCD_Print(text2, 90, 132, 2, 0xffff , 0x2AAD);
   }
 
+
   //******************* codigo tarjeda SD****************************
 
 
 
   //reabriendo para escribir
 
-    scores = SD.open("res.txt", FILE_WRITE);
-    if (scores) {
-      Serial.println("probando");
-   
-      scores.seek(0);
-      scores.print(J1 + "," + J2);
-      // close the file:
-      scores.close();
-      Serial.println("done.");
-    } else {
-      // if the file didn't open, print an error:
-      //Serial.println("error opening test.txt");
-        Serial.println("F de F");
-    }
+  scores = SD.open("res.txt", FILE_WRITE);
+  if (scores) {
+    Serial.println("probando");
+
+    scores.seek(0);
+    scores.print(J1 + "," + J2);
+    // close the file:
+    scores.close();
+    Serial.println("done.");
+  } else {
+    // if the file didn't open, print an error:
+    //Serial.println("error opening test.txt");
+    Serial.println("F de F");
+  }
+
+
 
 
 }
-
-
 
 //funcion para hacer el split de la lectura serial
 String getValue(String data, char separator, int index) {
