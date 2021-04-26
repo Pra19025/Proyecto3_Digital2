@@ -97,10 +97,10 @@ void setup() {
     LCD_Bitmap(i,  0, 31, 24, cloud);
   }
 
-<<<<<<< Updated upstream
+
   //  String text1 = "Pelea violenta";
   //  LCD_Print(text1, 20, 100, 2, 0xffff , 0x0528);
-=======
+
   String text1 = "Pelea violenta";
   LCD_Print(text1, 20, 100, 2, 0xffff , 0x2AAD);
 
@@ -118,7 +118,7 @@ void setup() {
   Serial.println("initialization done.");
 
 
->>>>>>> Stashed changes
+
 
 
 }
@@ -126,9 +126,9 @@ void setup() {
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
-<<<<<<< Updated upstream
+
   barVidaJ2 = barVidaJ1 = 0 ;
-=======
+
 
 
   // codigo sd
@@ -164,38 +164,30 @@ void loop() {
 
 
 
-
-
   barVidaJ2 = barVidaJ1 = 0;
   LCD_Sprite(0, 32, 130, 26, vida, 3, 0, 0, 0);
   LCD_Sprite(190, 32, 130, 26, vida, 3, 0, 1, 0);
->>>>>>> Stashed changes
+
   x = 0;
   y = 175;
   x2 = 290;
   y2 = 170;
   FillRect(90, 100, 150, 60, 0x2AAD);
   while (barVidaJ1 < 3 & barVidaJ2 < 3 ) {
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
+
+
+
     //aqui se reciben los datos del esp32 ( se reciben en el serial 5 )
     while (Serial5.available()) {
       char inByte = Serial5.read();
       if (inByte != '\n') {
         //convierto todo a datos
         datos.concat(inByte);
-<<<<<<< Updated upstream
-
       }
-
       else {
-        //Serial.println(datos);
-=======
-      } else {
 
->>>>>>> Stashed changes
+
         String p1 = getValue(datos, ',', 0);
         String p2 = getValue(datos, ',', 1);
         String p3 = getValue(datos, ',', 2);
@@ -301,11 +293,11 @@ void loop() {
     //La condicional expresa:
     //si: El boton se presiono y La distancia entre el bitmap de pos. más grande es menor a:
     //              -> 30 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
-<<<<<<< Updated upstream
+
    //              -> 21 (largo del ataque) si el ataque pasa por encima del personaje.
-=======
+
     //              -> 21 (largo del ataque) si el ataque pasa por encima del personaje.
->>>>>>> Stashed changes
+
     if (ataque2 == 0 & (((y2 - y < 30) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 21))) {//si las condiciones se cumplen:
       barVidaJ1++; //Se aumenta el valor de la variable valores posibles 1,2 o 3 (este ultimo rompe el while)
       LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0); //se varia el parametro index (1 = vida amarilla y 2 = vida roja)
@@ -316,10 +308,10 @@ void loop() {
       barVidaJ2++;
       LCD_Sprite(190, 32, 130, 26, vida, 3, barVidaJ2, 1, 0);
     }
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
+
+
+
   }//Fin del While
   //En estos if's se escribe quien es el ganador
   if (barVidaJ2 == 3) {
