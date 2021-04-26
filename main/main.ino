@@ -4,9 +4,6 @@
 //8/04/2021
 
 
-//#include "pitches.h"
-//#define NOTE_C4_1 260
-
 
 #include <stdint.h>
 #include <stdbool.h>
