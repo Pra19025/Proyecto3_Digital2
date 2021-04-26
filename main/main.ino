@@ -119,6 +119,38 @@ void setup() {
 // Loop Infinito
 //***************************************************************************************************************************************
 void loop() {
+
+
+  //******************* codigo sd*******************
+  
+  //Primero se leen los resultados previos
+
+  scores = SD.open("/res.txt");
+  if (scores) {
+    //se lee el documento hasta que ya no haya más datos
+    while (scores.available()) {
+      // se lee colocando una coma en medio de las lecturas
+      //esto se realiza de este modo, debido a que es más fácil leer los datos con una coma en medio de estos
+      cadena = cadena + "," + scores.read();
+
+    }
+    //se imprime en el serial los datos actualizados, aunque estos están codificados
+    Serial.println(cadena);
+    // close the file:
+    scores.close();
+    
+    //se resta el 48 debido a que se obtiene el valor en ASCII 
+    J1 = getValue(cadena, ',', 1).toInt() - 48;
+    J2 = getValue(cadena, ',', 3).toInt() - 48;
+
+
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening res.txt");
+  }
+  //se limpia cadena para reobtener los datos la próxima vez que corra el programa
+  cadena = "";
+  
   barVidaJ2 = barVidaJ1 = 0;
   LCD_Sprite(0, 32, 130, 26, vida, 3, 0, 0, 0);
   LCD_Sprite(190, 32, 130, 26, vida, 3, 0, 1, 0);
@@ -135,19 +167,22 @@ void loop() {
       char inByte = Serial5.read();
       if (inByte != '\n') {
         //convierto todo a datos
+        // los datos son mandados en el esp32 separados por comas
         datos.concat(inByte);
       } else {
-        //Serial.println(datos);
+        //Se utiliza la función getValue para separarlos según las comas, debido a que los datos no tienen la misma longitud siempre
         String p1 = getValue(datos, ',', 0);
         String p2 = getValue(datos, ',', 1);
         String p3 = getValue(datos, ',', 2);
         String p4 = getValue(datos, ',', 3);
 
+        //se convierten los valores leídos a int para poder operarlos
         potx1 = p1.toInt();
         poty1 = p2.toInt();
         potx2 = p3.toInt();
         poty2 = p4.toInt();
 
+        //se limpia la cadena para la proxima lectura
         datos = "";
       }
     }
@@ -155,6 +190,9 @@ void loop() {
     //la dimensión de la pantalla es: 320*240 pixeles
     //PRIMER JOYSTICK
     if (potx1 <= 100) {
+      //se utiliza el valor 100, debido a que el joystick centrado se encuentra en aproximadamente 126
+      //se utilizan valores poco más grandes, y poco más pequeños para confirmar que se deba dar movimiento en una dirección. 
+      // los mismos comentarios aplican para las otras direcciones de los joysticks. 
       x--;
       flipJ1 = 1;
       if (x < 0)x = 0;
@@ -205,11 +243,13 @@ void loop() {
     if (ataque1 == 0) {
       int yataque = y;
       if (flipJ1 == 0) {
-        for (m1 = x + 30; m1 < 288; m1++) {
+        //se utiliza un ciclo for para que el ataque vaya en linea recta desde donde se disparo
+        for (m1 = x + 30; m1 < 320; m1++) {
           int anim3 = (m1 / 32) % 3;
           LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, flipJ1, 0);
           V_line(m1 - 1, yataque, 32, 0x2AAD);
-          //delay(5);
+          // a través de Vline se borra el rastro que deja el ataque
+          
         }
       } else {
         for (m1 = x - 30; m1 > 0; m1--) {
@@ -225,12 +265,12 @@ void loop() {
       if (flipJ2 == 1) {
         for (k1 = x2 - 32; k1 > 0; k1--) {
           int anim4 = (k1 / 32) % 3;
-          LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, 1, 0);
+          LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, flipJ2, 0);
           V_line(k1 + 32, yataque2, 32, 0x2AAD);
           //delay(5);
         }
       } else {
-        for (k1 = x2 + 30; k1 < 288; k1++) {
+        for (k1 = x2 + 30; k1 < 320; k1++) {
           int anim4 = (k1 / 32) % 3;
           LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, flipJ2, 0);
           V_line(k1 - 1, yataque2, 32, 0x2AAD);
@@ -239,7 +279,7 @@ void loop() {
       }
     }
     //--------------Rutinas para comprobar que el ataque acerto-------------------------------
-    //----Para el ataque de la ballena------------
+    //----Para el ataque del tiburon------------
     if (ataque2 == 0 ) {
       FillRect(k1, y2, 32, 21, 0x2AAD);
       int h = y2 - y; //se obtiene la posicion en el eje Y de J2 respecto a J1
@@ -298,8 +338,8 @@ void loop() {
   if (scores) {
     Serial.println("probando");
 
-    scores.seek(0);
-    scores.print(J1 + "," + J2);
+    scores.seek(0); //se coloca en la posición 0 para reescribir sobre los valores viejos
+    scores.print(J1 + "," + J2);  //se imprimen los nuevos resultados separados por una coma
     // close the file:
     scores.close();
     Serial.println("done.");
