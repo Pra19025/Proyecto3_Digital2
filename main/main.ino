@@ -80,7 +80,6 @@ void setup() {
   pinMode(PA_7, INPUT_PULLUP);
   pinMode(PF_1, INPUT_PULLUP);
 
-
   Serial5.begin(115200);  //el serial que se comunica con el esp32
 
   SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
@@ -98,8 +97,8 @@ void setup() {
     LCD_Bitmap(i,  0, 31, 24, cloud);
   }
 
-   String text1 = "Pelea violenta";
-   LCD_Print(text1, 20, 100, 2, 0xffff , 0x2AAD);
+  String text1 = "Pelea violenta";
+  LCD_Print(text1, 20, 100, 2, 0xffff , 0x2AAD);
 
 
 }
@@ -117,14 +116,14 @@ void loop() {
   delay(1000);
   FillRect(0, 58, 320, 149, 0x2AAD);
   while (barVidaJ1 < 3 & barVidaJ2 < 3 ) {
-   
+
     //aqui se reciben los datos del esp32 ( se reciben en el serial 5 )
     while (Serial5.available()) {
       char inByte = Serial5.read();
       if (inByte != '\n') {
         //convierto todo a datos
         datos.concat(inByte);
-      }else {
+      } else {
         //Serial.println(datos);
         String p1 = getValue(datos, ',', 0);
         String p2 = getValue(datos, ',', 1);
@@ -157,8 +156,6 @@ void loop() {
     if (155 <= poty1)y--;
     if (y < 58)y = 58;
 
-    anim1 = (x) % 3;
-
     //SEGUNDO JOYSTICK
     if (potx2 <= 100) {
       x2--;
@@ -175,8 +172,8 @@ void loop() {
     if (155 <= poty2)y2--;
     if (y2 < 58) y2 = 58;
 
-    anim2 = (x2) % 3;
-
+    anim2 = (x2) % 2;
+    anim1 = (x) % 3;
     LCD_Sprite(x2, y2, 30, 33, tiburonS, 3, anim2, flipJ2, 0 );
     LCD_Sprite(x, y, 28, 30, megaman, 3, anim1, flipJ1, 0 );
 
@@ -199,7 +196,7 @@ void loop() {
           int anim3 = (m1 / 32) % 3;
           LCD_Sprite(m1, yataque, 32, 29, ataqueMega, 3, anim3, flipJ1, 0);
           V_line(m1 - 1, yataque, 32, 0x2AAD);
-          delay(5);
+          //delay(5);
         }
       } else {
         for (m1 = x - 30; m1 > 0; m1--) {
@@ -217,32 +214,56 @@ void loop() {
           int anim4 = (k1 / 32) % 3;
           LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, 1, 0);
           V_line(k1 + 32, yataque2, 32, 0x2AAD);
-          delay(5);
+          //delay(5);
         }
       } else {
         for (k1 = x2 + 30; k1 < 288; k1++) {
           int anim4 = (k1 / 32) % 3;
           LCD_Sprite(k1, yataque2, 32, 21, ataqueTib, 3, anim4, flipJ2, 0);
           V_line(k1 - 1, yataque2, 32, 0x2AAD);
-          delay(5);
+          //delay(5);
         }
       }
     }
-    //La condicional expresa:
-    //si: El boton se presiono y La distancia entre el bitmap de pos. más grande es menor a: 
-    //              -> 30 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
-   //              -> 21 (largo del ataque) si el ataque pasa por encima del personaje. 
-    if (ataque2 == 0 & (((y2 - y < 30) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 21))) {//si las condiciones se cumplen:
-      barVidaJ1++; //Se aumenta el valor de la variable valores posibles 1,2 o 3 (este ultimo rompe el while)
-      LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0); //se varia el parametro index (1 = vida amarilla y 2 = vida roja)
+    if (ataque2 == 0 ) {
+      FillRect(k1, y2, 32, 21, 0x2AAD);
+      int d = y2 - y; 
+      int a = k1 - x;
+      int b = x - x2;
+      int hit = 0;
+      if ((flipJ2 == 0) & ((a >= 0) & (b >= 0)))hit++;
+      if ((flipJ2 == 1) & (((-a) >= 0) & ((-b) >= 0)))hit++;
+      if ((((d < 30) & (d >= 0)) | ((-d) >= 0) & ((-d) < 21)) & (hit == 1))barVidaJ1++;
+      LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0);
     }
-    //Misma logica de arriba solo que: -> 29 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
-    //                                  -> 21 (aprox. largo del ataque) si el ataque pasa por encima del personaje. 
-    if (ataque1 == 0 & (((y2 - y < 29) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 25))) {
-      barVidaJ2++;
+    if (ataque1  == 0 ) {
+      FillRect(m1, y, 33, 29, 0x2AAD);
+      int d = y2 - y;
+      int a = m1 - x2;
+      int b = x2 - x;
+      int hit = 0;
+      if ((flipJ1 == 0) & ((a >= 0) & (b >= 0)))hit++;
+      if ((flipJ1 == 1) & (((-a) >= 0) & ((-b) >= 0)))hit++;
+      if ((((d < 30) & (d >= 0)) | ((-d) >= 0) & ((-d) < 25)) & (hit == 1))barVidaJ2++;
       LCD_Sprite(190, 32, 130, 26, vida, 3, barVidaJ2, 1, 0);
     }
-    
+
+
+    //La condicional expresa:
+    //si: El boton se presiono y La distancia entre el bitmap de pos. más grande es menor a:
+    //              -> 30 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
+    //              -> 21 (largo del ataque) si el ataque pasa por encima del personaje.
+    /*  if (ataque2 == 0 & (((y2 - y < 30) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 21))) {//si las condiciones se cumplen:
+        barVidaJ1++; //Se aumenta el valor de la variable valores posibles 1,2 o 3 (este ultimo rompe el while)
+        LCD_Sprite(0, 32, 130, 26, vida, 3, barVidaJ1, 0, 0); //se varia el parametro index (1 = vida amarilla y 2 = vida roja)
+      }*/
+    //Misma logica de arriba solo que: -> 29 (aprox. el largo del personaje) si el ataque pasa por debajo del personaje.
+    //                                  -> 21 (aprox. largo del ataque) si el ataque pasa por encima del personaje.
+    /*  if (ataque1 == 0 & (((y2 - y < 29) & (y2 - y >= 0)) | (y - y2 >= 0) & (y - y2 < 25))) {
+        barVidaJ2++;
+        LCD_Sprite(190, 32, 130, 26, vida, 3, barVidaJ2, 1, 0);
+      }*/
+
   }//Fin del While
   //En estos if's se escribe quien es el ganador
   if (barVidaJ2 == 3) {
