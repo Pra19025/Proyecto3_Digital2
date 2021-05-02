@@ -48,8 +48,6 @@ int barVidaJ2;
 String J1;
 String J2;
 String cadena = "";
-
-int buzzerPin = PE_3;
 //estas variables sirven para controlar el movimiento de los jugadores
 String datos = "";
 //J1
